@@ -212,27 +212,50 @@ export type Database = {
       }
       photo_uploads: {
         Row: {
+          check_in_id: string | null
           created_at: string
           id: string
+          notes: string | null
           owner_id: string
           photo_path: string
+          profile_id: string | null
+          quota_windows: Json | null
           status: string
+          task_id: string | null
         }
         Insert: {
+          check_in_id?: string | null
           created_at?: string
           id?: string
+          notes?: string | null
           owner_id: string
           photo_path: string
+          profile_id?: string | null
+          quota_windows?: Json | null
           status?: string
+          task_id?: string | null
         }
         Update: {
+          check_in_id?: string | null
           created_at?: string
           id?: string
+          notes?: string | null
           owner_id?: string
           photo_path?: string
+          profile_id?: string | null
+          quota_windows?: Json | null
           status?: string
+          task_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "photo_uploads_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "person_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -275,6 +298,41 @@ export type Database = {
           weekly_reminder?: boolean
         }
         Relationships: []
+      }
+      skin_advice: {
+        Row: {
+          check_in_id: string
+          created_at: string
+          id: string
+          owner_id: string
+          payload: Json
+          safety_hash: string
+        }
+        Insert: {
+          check_in_id: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          payload: Json
+          safety_hash: string
+        }
+        Update: {
+          check_in_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          payload?: Json
+          safety_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skin_advice_check_in_id_fkey"
+            columns: ["check_in_id"]
+            isOneToOne: false
+            referencedRelation: "check_ins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       skin_products: {
         Row: {
@@ -331,7 +389,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      release_analysis_quota: {
+        Args: { p_app: string; p_day: string; p_owner: string; p_short: string }
+        Returns: undefined
+      }
+      reserve_analysis_quota: {
+        Args: { p_app: string; p_day: string; p_owner: string; p_short: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

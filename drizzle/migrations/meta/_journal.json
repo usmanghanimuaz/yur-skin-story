@@ -8,6 +8,13 @@
       "when": 1793388028914,
       "tag": "0000_skintwin_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793388506370,
+      "tag": "0001_analysis_task_and_advice_cache",
+      "breakpoints": true
     }
   ]
 }
