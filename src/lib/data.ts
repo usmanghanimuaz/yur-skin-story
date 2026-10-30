@@ -52,5 +52,5 @@ export const activityOptions = queryOptions({
   },
 });
 export async function logActivity(event: "sign_in" | "password_changed" | "settings_updated" | "data_export" | "data_access", detail?: string) {
-  await supabase.from("account_activity").insert({ event, detail });
+  await supabase.from("account_activity").insert({ event, detail: detail ?? null });
 }

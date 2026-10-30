@@ -46,9 +46,9 @@ export function normalizeYoucamScores(output: unknown): { metrics: Metrics; over
       return;
     }
     const obj = node as Record<string, unknown>;
-    const type = typeof obj.type === "string" ? obj.type : keyHint;
+    const type = typeof obj["type"] === "string" ? obj["type"] : keyHint;
     if (type && YOUCAM_ACTIONS[type] && ("ui_score" in obj || "score" in obj)) {
-      const s = clampScore(obj.ui_score ?? obj.score);
+      const s = clampScore(obj["ui_score"] ?? obj["score"]);
       if (s !== null) metrics[YOUCAM_ACTIONS[type]] = s;
     }
     for (const [k, v] of Object.entries(obj)) visit(v, k);

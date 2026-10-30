@@ -16,7 +16,7 @@ async function youcam(path: string, key: string, body?: unknown) {
   const res = await fetch(`${API}${path}`, {
     method: body ? "POST" : "GET",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? JSON.stringify(body) : null,
   });
   const out = await res.json() as { data?: Record<string, unknown>; error?: string; status?: number };
   if (!res.ok) throw new Error(res.status === 401 ? "YouCam credentials were rejected. Please contact the app owner." : "YouCam could not process this photo. Try a clear close-up in daylight.");
@@ -44,7 +44,7 @@ export const startAnalysis = createServerFn({ method: "POST" })
     }
     try {
       const registered = await youcam("/file", key, { files: [{ content_type: file.type, file_name: "skintwin-photo", file_size: file.size }] });
-      const files = registered.data?.files as { file_id: string; requests: { url: string; method: string; headers: Record<string, string> }[] }[] | undefined;
+      const files = registered.data?.["files"] as { file_id: string; requests: { url: string; method: string; headers: Record<string, string> }[] }[] | undefined;
       const first = files?.[0];
       const request = first?.requests?.[0];
       if (!first || !request) throw new Error("YouCam upload could not be initialized.");
@@ -53,7 +53,7 @@ export const startAnalysis = createServerFn({ method: "POST" })
       const uploaded = await fetch(request.url, { method: request.method, headers: request.headers, body: file });
       if (!uploaded.ok) throw new Error("Photo could not be sent for analysis. Please try again.");
       const task = await youcam("/task/skin-analysis", key, { src_file_id: first.file_id, dst_actions: ["wrinkle", "pore", "texture", "acne", "firmness", "moisture", "age_spot", "redness", "oiliness", "radiance", "dark_circle_v2"], format: "json" });
-      const taskId = task.data?.task_id;
+      const taskId = task.data?.["task_id"];
       if (typeof taskId !== "string") throw new Error("YouCam did not return an analysis reference.");
       await admin.from("photo_uploads").update({ task_id: taskId, status: "running" }).eq("id", upload.id);
       return { uploadId: upload.id };
@@ -77,7 +77,7 @@ export const pollAnalysis = createServerFn({ method: "POST" })
     const key = process.env["YOUCAM_API_KEY"];
     if (!key || !upload.task_id || !upload.profile_id) throw new Error("Analysis is not available.");
     const result = await youcam(`/task/skin-analysis/${encodeURIComponent(upload.task_id)}`, key);
-    const status = result.data?.task_status;
+    const status = result.data?.["task_status"];
     if (status !== "success" && status !== "error") return { status: "running", checkInId: null };
     if (status === "error") {
       const { data: rejected } = await admin.from("photo_uploads").update({ status: "rejected" }).eq("id", upload.id).eq("status", "running").select("id");

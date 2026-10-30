@@ -27,7 +27,7 @@ export function productImpact(product: ProductLite, checkIns: CheckInLite[]) {
 export function buildRoutineIcs(morning: string, night: string, now = new Date()): string {
   const d = now.toISOString().slice(0, 10).replace(/-/g, "");
   const ev = (id: string, time: string, title: string) => {
-    const [h, m] = time.split(":");
+    const [h = "00", m = "00"] = time.split(":");
     return ["BEGIN:VEVENT", `UID:${id}-${d}@skintwin`, `DTSTAMP:${d}T000000Z`, `DTSTART:${d}T${h.padStart(2, "0")}${m.padStart(2, "0")}00`, "RRULE:FREQ=DAILY", `SUMMARY:${title}`, "END:VEVENT"].join("\r\n");
   };
   return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//SkinTwin AI//Routine//EN", ev("am", morning, "SkinTwin morning routine"), ev("pm", night, "SkinTwin night routine"), "END:VCALENDAR"].join("\r\n");
