@@ -1,0 +1,11 @@
+import type { Metrics } from "./skin";
+import portrait from "@/assets/skintwin-portrait.jpg";
+
+export const demoPhoto = portrait;
+export const demoPerson = { id: "demo", name: "Me", skin_type: "Combination", pregnancy: false, allergies: "", age_band: "25-34", country: "Pakistan" };
+export const demoChecks = [
+  { id: "sample-latest", profile_id: "demo", owner_id: "demo", photo_path: null, check_in_date: "2026-10-30T09:00:00Z", overall_score: 78, metrics: { clarity: 82, oil_control: 74, pores: 76, texture: 80, fine_lines: 84, firmness: 86, pigment: 71, redness: 79, dark_circles: 68, hydration: 81, radiance: 77 } as Metrics, engine: "sample", engine_scores: null, notes: "Consistent with my morning routine this week.", created_at: "2026-10-30" },
+  { id: "sample-two", profile_id: "demo", owner_id: "demo", photo_path: null, check_in_date: "2026-10-23T09:00:00Z", overall_score: 75, metrics: { clarity: 79, oil_control: 72, pores: 74, texture: 77, fine_lines: 82, firmness: 84, pigment: 69, redness: 75, dark_circles: 65, hydration: 77, radiance: 73 } as Metrics, engine: "sample", engine_scores: null, notes: "Added a gentle moisturiser.", created_at: "2026-10-23" },
+  { id: "sample-three", profile_id: "demo", owner_id: "demo", photo_path: null, check_in_date: "2026-10-16T09:00:00Z", overall_score: 72, metrics: { clarity: 76, oil_control: 69, pores: 70, texture: 73, fine_lines: 82, firmness: 80, pigment: 68, redness: 72, dark_circles: 63, hydration: 73, radiance: 70 } as Metrics, engine: "sample", engine_scores: null, notes: "First week of tracking.", created_at: "2026-10-16" },
+  { id: "sample-first", profile_id: "demo", owner_id: "demo", photo_path: null, check_in_date: "2026-10-09T09:00:00Z", overall_score: 69, metrics: { clarity: 72, oil_control: 65, pores: 68, texture: 70, fine_lines: 80, firmness: 78, pigment: 65, redness: 68, dark_circles: 60, hydration: 69, radiance: 64 } as Metrics, engine: "sample", engine_scores: null, notes: "My starting point.", created_at: "2026-10-09" },
+];
