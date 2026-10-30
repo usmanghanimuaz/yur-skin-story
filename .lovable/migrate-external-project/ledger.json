@@ -86,5 +86,11 @@
       "status": "in_progress",
       "next_action": "Browser and regression checks"
     }
+  ],
+  "notes": [
+    "Frontend and schema rebuild active; full migration is incomplete.",
+    "Provisional fair-use defaults: 3/10 minutes, 10/day/user, 500/day/app; owner approval needed.",
+    "Public preview and sample checked in browser without runtime errors; authenticated CRUD not verified.",
+    "Translations, four-step onboarding, full guide and policy content, OAuth consent and deletion retry scheduling are still incomplete."
   ]
 }

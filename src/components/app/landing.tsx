@@ -11,7 +11,7 @@ export function Landing() {
   return <PublicShell>
     <section className="relative overflow-hidden">
       <img src={hero} alt="Natural close-up skin portrait" width={1600} height={1024} className="absolute inset-0 size-full object-cover object-right" />
-      <div className="absolute inset-0 bg-background/15 dark:bg-background/70" />
+      <div className="absolute inset-0 bg-background/70 md:bg-background/15 dark:bg-background/80" />
       <div className="relative mx-auto flex min-h-[575px] max-w-7xl items-center px-5 py-14 sm:px-8 md:min-h-[630px]">
         <div className="max-w-[550px]">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/75 px-3.5 py-1.5 text-xs font-medium text-primary"><Sparkles className="size-3.5" /> YOUR SKIN. A LITTLE BETTER UNDERSTOOD.</div>
