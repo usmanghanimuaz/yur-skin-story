@@ -14,7 +14,318 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      account_activity: {
+        Row: {
+          created_at: string
+          detail: string | null
+          event: string
+          id: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          event: string
+          id?: string
+          owner_id?: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          event?: string
+          id?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      advice_feedback: {
+        Row: {
+          check_in_id: string
+          created_at: string
+          helpful: boolean
+          id: string
+          owner_id: string
+          recommendation_key: string
+        }
+        Insert: {
+          check_in_id: string
+          created_at?: string
+          helpful: boolean
+          id?: string
+          owner_id?: string
+          recommendation_key: string
+        }
+        Update: {
+          check_in_id?: string
+          created_at?: string
+          helpful?: boolean
+          id?: string
+          owner_id?: string
+          recommendation_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advice_feedback_check_in_id_fkey"
+            columns: ["check_in_id"]
+            isOneToOne: false
+            referencedRelation: "check_ins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analysis_quota: {
+        Row: {
+          count: number
+          owner_id: string
+          window_key: string
+        }
+        Insert: {
+          count?: number
+          owner_id: string
+          window_key: string
+        }
+        Update: {
+          count?: number
+          owner_id?: string
+          window_key?: string
+        }
+        Relationships: []
+      }
+      check_ins: {
+        Row: {
+          check_in_date: string
+          created_at: string
+          engine: string
+          engine_scores: Json | null
+          id: string
+          metrics: Json
+          notes: string | null
+          overall_score: number
+          owner_id: string
+          photo_path: string | null
+          profile_id: string
+        }
+        Insert: {
+          check_in_date?: string
+          created_at?: string
+          engine: string
+          engine_scores?: Json | null
+          id?: string
+          metrics: Json
+          notes?: string | null
+          overall_score: number
+          owner_id: string
+          photo_path?: string | null
+          profile_id: string
+        }
+        Update: {
+          check_in_date?: string
+          created_at?: string
+          engine?: string
+          engine_scores?: Json | null
+          id?: string
+          metrics?: Json
+          notes?: string | null
+          overall_score?: number
+          owner_id?: string
+          photo_path?: string | null
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_ins_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "person_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      person_profiles: {
+        Row: {
+          age_band: string | null
+          allergies: string | null
+          country: string | null
+          created_at: string
+          id: string
+          is_me: boolean
+          name: string
+          pregnancy: boolean
+          skin_type: string | null
+          user_id: string
+        }
+        Insert: {
+          age_band?: string | null
+          allergies?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          is_me?: boolean
+          name: string
+          pregnancy?: boolean
+          skin_type?: string | null
+          user_id?: string
+        }
+        Update: {
+          age_band?: string | null
+          allergies?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          is_me?: boolean
+          name?: string
+          pregnancy?: boolean
+          skin_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      photo_deletion_requests: {
+        Row: {
+          check_in_id: string | null
+          created_at: string
+          id: string
+          owner_id: string
+          photo_path: string
+          processed_at: string | null
+          status: string
+        }
+        Insert: {
+          check_in_id?: string | null
+          created_at?: string
+          id?: string
+          owner_id: string
+          photo_path: string
+          processed_at?: string | null
+          status?: string
+        }
+        Update: {
+          check_in_id?: string | null
+          created_at?: string
+          id?: string
+          owner_id?: string
+          photo_path?: string
+          processed_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      photo_uploads: {
+        Row: {
+          created_at: string
+          id: string
+          owner_id: string
+          photo_path: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_id: string
+          photo_path: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_id?: string
+          photo_path?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          consent_version: string | null
+          created_at: string
+          display_name: string | null
+          onboarded: boolean
+          onboarding_step: number
+          routine_morning: string | null
+          routine_night: string | null
+          routine_reminders: boolean
+          updated_at: string
+          user_id: string
+          weekly_reminder: boolean
+        }
+        Insert: {
+          consent_version?: string | null
+          created_at?: string
+          display_name?: string | null
+          onboarded?: boolean
+          onboarding_step?: number
+          routine_morning?: string | null
+          routine_night?: string | null
+          routine_reminders?: boolean
+          updated_at?: string
+          user_id: string
+          weekly_reminder?: boolean
+        }
+        Update: {
+          consent_version?: string | null
+          created_at?: string
+          display_name?: string | null
+          onboarded?: boolean
+          onboarding_step?: number
+          routine_morning?: string | null
+          routine_night?: string | null
+          routine_reminders?: boolean
+          updated_at?: string
+          user_id?: string
+          weekly_reminder?: boolean
+        }
+        Relationships: []
+      }
+      skin_products: {
+        Row: {
+          actives: string | null
+          brand: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          owner_id: string
+          profile_id: string
+          routine_slot: string
+          started_date: string
+          stopped_date: string | null
+        }
+        Insert: {
+          actives?: string | null
+          brand?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          owner_id?: string
+          profile_id: string
+          routine_slot?: string
+          started_date?: string
+          stopped_date?: string | null
+        }
+        Update: {
+          actives?: string | null
+          brand?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          owner_id?: string
+          profile_id?: string
+          routine_slot?: string
+          started_date?: string
+          stopped_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skin_products_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "person_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
