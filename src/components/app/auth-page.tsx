@@ -1,0 +1,81 @@
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, ArrowUpRight, Loader2, Mail, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Brand, Disclaimer } from "./brand";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+import { logActivity } from "@/lib/data";
+
+export type AuthMode = "login" | "register" | "forgot" | "reset";
+export function AuthPage({ mode }: { mode: AuthMode }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [recovery, setRecovery] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (mode === "reset") {
+      const recoveryHash = window.location.hash.includes("type=recovery") || sessionStorage.getItem("skintwin-recovery") === "yes";
+      setRecovery(recoveryHash);
+      if (recoveryHash) sessionStorage.setItem("skintwin-recovery", "yes");
+    }
+  }, [mode]);
+  const destination = () => {
+    const requested = new URLSearchParams(window.location.search).get("returnTo") ?? sessionStorage.getItem("skintwin-return");
+    return requested?.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
+  };
+  const finishSignIn = async () => { await logActivity("sign_in", "Signed in"); sessionStorage.setItem("skintwin-signin-logged", "yes"); await navigate({ to: destination() }); };
+  const submit = async (e: FormEvent) => {
+    e.preventDefault(); setError(""); setMessage("");
+    if ((mode === "register" || mode === "reset") && password !== confirm) { setError("Passwords do not match."); return; }
+    setBusy(true);
+    try {
+      if (mode === "forgot") {
+        await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
+        setMessage("If an account exists, you'll receive a password reset email. Check your inbox and spam folder.");
+      } else if (mode === "reset") {
+        if (!recovery) throw new Error("Open the reset link from your email to set a new password.");
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        sessionStorage.removeItem("skintwin-recovery"); setMessage("Your password has been updated. You can now sign in.");
+      } else if (mode === "register") {
+        const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { full_name: name } } });
+        if (error) throw error;
+        if (data.session) await finishSignIn();
+        else setMessage("Check your email to confirm your account. Then sign in to meet your skin twin.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await finishSignIn();
+      }
+    } catch (err) { setError(err instanceof Error ? err.message : "Something went wrong. Please try again."); }
+    finally { setBusy(false); }
+  };
+  const google = async () => {
+    setBusy(true); setError("");
+    sessionStorage.setItem("skintwin-return", destination());
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth` });
+    if (result.error) { setError(result.error.message ?? "Google sign-in could not start."); setBusy(false); return; }
+    if (!result.redirected) await finishSignIn();
+  };
+  const headings = { login: ["Welcome back.", "Your skin story is right where you left it."], register: ["Meet your skin twin.", "A little insight is the start of a little progress."], forgot: ["Let's get you back in.", "We'll send a secure link to reset your password."], reset: ["A fresh start.", "Choose a new password for your account."] };
+  return <div className="flex min-h-screen flex-col"><header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-7 sm:px-8"><Brand /><Link to="/guide" className="text-sm text-muted-foreground">SkinTwin guide <ArrowUpRight className="ml-1 inline size-3" /></Link></header><main className="mx-auto w-full max-w-md flex-1 px-5 py-10"><Link to="/" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground"><ArrowLeft className="size-3" /> Back to home</Link><h1 className="text-5xl">{headings[mode][0]}</h1><p className="mt-4 text-sm leading-6 text-muted-foreground">{headings[mode][1]}</p>
+    {message ? <div className="mt-8 rounded-2xl border bg-secondary/60 p-6"><Mail className="mb-3 size-6 text-primary" /><p className="text-sm leading-7" role="status">{message}</p><Button asChild variant="link" className="mt-3 px-0"><Link to="/login">Back to sign in <ArrowUpRight /></Link></Button></div> : <form className="mt-8 space-y-5" onSubmit={submit}>
+      {mode === "register" && <div className="space-y-2"><Label htmlFor="name">Your name</Label><Input id="name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={60} autoComplete="name" className="h-12 rounded-xl bg-card" /></div>}
+      {mode !== "reset" && <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={255} autoComplete="email" placeholder="you@example.com" className="h-12 rounded-xl bg-card" /></div>}
+      {mode !== "forgot" && <div className="space-y-2"><div className="flex justify-between"><Label htmlFor="password">{mode === "reset" ? "New password" : "Password"}</Label>{mode === "login" && <Link to="/forgot-password" className="text-xs text-muted-foreground">Forgot password?</Link>}</div><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} maxLength={128} autoComplete={mode === "login" ? "current-password" : "new-password"} className="h-12 rounded-xl bg-card" /></div>}
+      {(mode === "register" || mode === "reset") && <div className="space-y-2"><Label htmlFor="confirm">Confirm password</Label><Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} maxLength={128} autoComplete="new-password" className="h-12 rounded-xl bg-card" /></div>}
+      {mode === "register" && <label className="flex items-start gap-2 text-xs leading-6 text-muted-foreground"><input type="checkbox" required className="mt-1.5" /><span>I agree to the <Link to="/terms" className="underline">Terms</Link> and <Link to="/privacy" className="underline">Privacy Policy</Link>. This is cosmetic tracking, not medical advice.</span></label>}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      <Button type="submit" disabled={busy || mode === "reset" && !recovery} className="h-12 w-full rounded-full">{busy ? <Loader2 className="animate-spin" /> : <>{mode === "login" ? "Log in" : mode === "register" ? "Create my account" : mode === "forgot" ? "Send reset link" : "Save new password"}<ArrowUpRight /></>}</Button>
+      {(mode === "login" || mode === "register") && <><div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" /></div><Button type="button" variant="outline" className="h-12 w-full rounded-full bg-card" disabled={busy} onClick={google}><span className="text-base font-semibold">G</span> Continue with Google</Button><p className="text-center text-xs text-muted-foreground">{mode === "login" ? "New to SkinTwin?" : "Already have an account?"} <Link to={mode === "login" ? "/register" : "/login"} search={(prev: Record<string, unknown>) => prev} className="font-medium text-primary underline">{mode === "login" ? "Start your journey" : "Log in"}</Link></p></>}
+    </form>}
+    <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4" /> Private by design. Always.</div></main><footer className="mx-auto max-w-xl px-5 py-8 text-center"><Disclaimer /></footer></div>;
+}
