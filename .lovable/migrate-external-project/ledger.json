@@ -1,0 +1,90 @@
+{
+  "app": "SkinTwin AI",
+  "source": "base44-specification",
+  "capabilities": [
+    {
+      "capability": "source",
+      "source": "Owner project specification; no code archive",
+      "outcome": "rebuild from specification",
+      "status": "ready",
+      "next_action": ""
+    },
+    {
+      "capability": "schema",
+      "source": "Base44 entity descriptions",
+      "outcome": "migrate",
+      "status": "implemented",
+      "next_action": "Verify RLS and one write"
+    },
+    {
+      "capability": "records",
+      "source": "No record exports supplied",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Attach per-table CSV exports"
+    },
+    {
+      "capability": "auth identities",
+      "source": "No App Users export supplied",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Attach users export; first-login verification and password setup"
+    },
+    {
+      "capability": "uploaded bytes",
+      "source": "No photo byte export supplied",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Attach original photo export"
+    },
+    {
+      "capability": "YouCam",
+      "source": "Existing YouCam provider",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Secure credentials and live analysis verification"
+    },
+    {
+      "capability": "auth",
+      "source": "Email/password and Google",
+      "outcome": "replace with Cloud",
+      "status": "in_progress",
+      "next_action": "Verify sign-in and password recovery"
+    },
+    {
+      "capability": "authorization",
+      "source": "Owner scoping, profile cap, private photos",
+      "outcome": "preserve",
+      "status": "in_progress",
+      "next_action": "Test ownership boundaries"
+    },
+    {
+      "capability": "callbacks and OAuth",
+      "source": "OAuth consent page documented; no callers supplied",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Verify external OAuth client contract"
+    },
+    {
+      "capability": "schedules",
+      "source": "In-app reminders; scheduled email not active in source",
+      "outcome": "preserve",
+      "status": "in_progress",
+      "next_action": "Verify preferences and ICS"
+    },
+    {
+      "capability": "cutover",
+      "source": "Owner requested no publish",
+      "outcome": "defer",
+      "status": "pending",
+      "next_action": "Owner approval to publish"
+    },
+    {
+      "capability": "verification",
+      "source": "Preview and CRUD",
+      "outcome": "verify",
+      "status": "in_progress",
+      "next_action": "Browser and regression checks"
+    }
+  ]
+}
