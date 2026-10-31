@@ -8,7 +8,8 @@
 - [x] Locale switcher for 9 locales with Urdu RTL (app navigation and shared labels)
 - [x] Account deletion with photo-byte erasure; hourly photo-deletion retry job
 - [ ] Assign first admin — needs owner to sign up first
-- [ ] Live YouCam verification — needs provider credentials
+- [x] YouCam key saved and accepted by provider
+- [ ] Full live scan with a real face photo — needs a signed-up account
 - [ ] Existing records, users and photo import — needs source exports
 - [ ] Translate full page body content and policy text into all locales — remaining implementation
 - [ ] OAuth client consent flow — needs external client details
