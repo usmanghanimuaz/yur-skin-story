@@ -23,6 +23,7 @@ export function Dashboard({ sample = false }: { sample?: boolean }) {
   const person = sample ? demoPerson : active;
   const checks = sample ? demoChecks : rows;
   if (!sample && (loading || isLoading)) return <div className="py-20 text-center text-muted-foreground">Loading your skin story…</div>;
+  if (!sample && acct && !acct.account.onboarded) return <EmptyState title="Let's finish setting up" text={`You're on step ${Math.min(acct.account.onboarding_step + 1, 4)} of 4. Pick up where you left off.`} to="/welcome" action="Continue setup" />;
   if (!person) return <EmptyState title="Let's meet your skin twin" text="Set up your first person profile to start tracking." to="/welcome" action="Set up my profile" />;
   const latest = checks[0];
   const previous = checks[1];

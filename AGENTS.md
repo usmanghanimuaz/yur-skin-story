@@ -15,3 +15,6 @@
 - Keep illustrative sample data browser-only and explicitly labelled, because sample scores must never become saved real check-ins.
 - Keep skin metric, safety advice and product impact rules in browser-safe pure modules, because they need focused regression tests and consistent presentation.
 - Keep migration capability state in the migration ledger, because source records and credentials can arrive separately from the rebuild.
+- Admin access uses `user_roles` + `has_role` in RLS and server checks, because roles must never come from editable profile data.
+- Photo-byte erasure lives in `src/lib/erasure.server.ts`, shared by user actions and the scheduled retry route, so both paths stay idempotent.
+- UI locale strings live in `src/lib/i18n.tsx`; `ur` sets RTL on the document, because Urdu script must render right-to-left.

@@ -24,6 +24,8 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCatalogueRouteImport } from './routes/_authenticated/catalogue'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedExportDataRouteImport } from './routes/_authenticated/export-data'
@@ -37,6 +39,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
 import { Route as AuthenticatedCheckInIndexRouteImport } from './routes/_authenticated/check-in.index'
 import { Route as AuthenticatedCheckInIdRouteImport } from './routes/_authenticated/check-in.$id'
+import { Route as ApiPublicJobsProcessPhotoDeletionsRouteImport } from './routes/api/public/jobs/process-photo-deletions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -112,6 +115,16 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCatalogueRoute = AuthenticatedCatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCompareRoute = AuthenticatedCompareRouteImport.update({
   id: '/compare',
   path: '/compare',
@@ -180,6 +193,12 @@ const AuthenticatedCheckInIdRoute = AuthenticatedCheckInIdRouteImport.update({
   path: '/check-in/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicJobsProcessPhotoDeletionsRoute =
+  ApiPublicJobsProcessPhotoDeletionsRouteImport.update({
+    id: '/api/public/jobs/process-photo-deletions',
+    path: '/api/public/jobs/process-photo-deletions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -196,6 +215,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/catalogue': typeof AuthenticatedCatalogueRoute
   '/compare': typeof AuthenticatedCompareRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/export-data': typeof AuthenticatedExportDataRoute
@@ -209,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in/': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -225,6 +247,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/catalogue': typeof AuthenticatedCatalogueRoute
   '/compare': typeof AuthenticatedCompareRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/export-data': typeof AuthenticatedExportDataRoute
@@ -238,6 +262,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -256,6 +281,8 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/catalogue': typeof AuthenticatedCatalogueRoute
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/export-data': typeof AuthenticatedExportDataRoute
@@ -269,6 +296,7 @@ export interface FileRoutesById {
   '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
   '/_authenticated/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/_authenticated/check-in/': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -287,6 +315,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/support'
     | '/terms'
+    | '/admin'
+    | '/catalogue'
     | '/compare'
     | '/dashboard'
     | '/export-data'
@@ -300,6 +330,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/check-in/$id'
     | '/check-in/'
+    | '/api/public/jobs/process-photo-deletions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -316,6 +347,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/support'
     | '/terms'
+    | '/admin'
+    | '/catalogue'
     | '/compare'
     | '/dashboard'
     | '/export-data'
@@ -329,6 +362,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/check-in/$id'
     | '/check-in'
+    | '/api/public/jobs/process-photo-deletions'
   id:
     | '__root__'
     | '/'
@@ -346,6 +380,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/support'
     | '/terms'
+    | '/_authenticated/admin'
+    | '/_authenticated/catalogue'
     | '/_authenticated/compare'
     | '/_authenticated/dashboard'
     | '/_authenticated/export-data'
@@ -359,6 +395,7 @@ export interface FileRouteTypes {
     | '/_authenticated/welcome'
     | '/_authenticated/check-in/$id'
     | '/_authenticated/check-in/'
+    | '/api/public/jobs/process-photo-deletions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -377,6 +414,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicJobsProcessPhotoDeletionsRoute: typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -486,6 +524,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/catalogue': {
+      id: '/_authenticated/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof AuthenticatedCatalogueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compare': {
       id: '/_authenticated/compare'
       path: '/compare'
@@ -577,10 +629,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCheckInIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/process-photo-deletions': {
+      id: '/api/public/jobs/process-photo-deletions'
+      path: '/api/public/jobs/process-photo-deletions'
+      fullPath: '/api/public/jobs/process-photo-deletions'
+      preLoaderRoute: typeof ApiPublicJobsProcessPhotoDeletionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCatalogueRoute: typeof AuthenticatedCatalogueRoute
   AuthenticatedCompareRoute: typeof AuthenticatedCompareRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedExportDataRoute: typeof AuthenticatedExportDataRoute
@@ -597,6 +658,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCatalogueRoute: AuthenticatedCatalogueRoute,
   AuthenticatedCompareRoute: AuthenticatedCompareRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedExportDataRoute: AuthenticatedExportDataRoute,
@@ -631,6 +694,8 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  ApiPublicJobsProcessPhotoDeletionsRoute:
+    ApiPublicJobsProcessPhotoDeletionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

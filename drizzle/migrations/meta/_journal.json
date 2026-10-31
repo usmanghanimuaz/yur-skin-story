@@ -15,6 +15,13 @@
       "when": 1793388506370,
       "tag": "0001_analysis_task_and_advice_cache",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793479087270,
+      "tag": "0002_admin_catalogue_evidence_locale",
+      "breakpoints": true
     }
   ]
 }
