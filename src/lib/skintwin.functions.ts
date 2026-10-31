@@ -120,15 +120,39 @@ export const deleteRecord = createServerFn({ method: "POST" })
       ? await admin.from("person_profiles").delete().eq("id", data.id).eq("user_id", context.userId)
       : await admin.from("check_ins").delete().eq("id", data.id).eq("owner_id", context.userId);
     if (error) throw new Error("Could not delete this record.");
-    // Process this owner's queue immediately; transient failures remain queued for the next attempt.
-    const { data: queue } = await admin.from("photo_deletion_requests").select("*").eq("owner_id", context.userId).eq("status", "pending").limit(100);
-    for (const item of queue ?? []) {
-      const { count } = await admin.from("check_ins").select("id", { count: "exact", head: true }).eq("photo_path", item.photo_path);
-      if (count !== 0 || !item.photo_path.startsWith(`${context.userId}/`)) continue;
-      const { error: erased } = await admin.storage.from("checkin-photos").remove([item.photo_path]);
-      if (!erased) await admin.from("photo_deletion_requests").update({ status: "erased", processed_at: new Date().toISOString() }).eq("id", item.id);
+    // Process this owner's queue immediately; transient failures remain queued for the scheduled retry job.
+    const { processDeletionQueue } = await import("./erasure.server");
+    const result = await processDeletionQueue(admin, context.userId);
+    return { success: true, erased: result.erased };
+  });
+
+export const deleteAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ confirm: z.literal("DELETE") }).parse(input))
+  .handler(async ({ context }) => {
+    const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
+    const uid = context.userId;
+    // Erase every stored photo byte under this owner's private folder, then all rows, then the identity.
+    const { data: files } = await admin.storage.from("checkin-photos").list(uid, { limit: 1000 });
+    const paths = (files ?? []).map((f) => `${uid}/${f.name}`);
+    if (paths.length) {
+      const { error } = await admin.storage.from("checkin-photos").remove(paths);
+      if (error) throw new Error("Photos could not be erased yet. Nothing was deleted; please retry.");
     }
-    return { success: true };
+    for (const table of ["skin_advice", "advice_feedback", "check_ins", "skin_products", "photo_uploads", "photo_deletion_requests", "analysis_quota", "account_activity"] as const) {
+      await admin.from(table).delete().eq("owner_id", uid);
+    }
+    await admin.from("person_profiles").delete().eq("user_id", uid);
+    const { error } = await admin.auth.admin.deleteUser(uid);
+    if (error) throw new Error("Your data was erased but the sign-in could not be removed. Please retry.");
+    return { success: true, photosErased: paths.length };
+  });
+
+export const myRole = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    return { admin: Boolean(data) };
   });
 
 export const getAdvice = createServerFn({ method: "POST" })

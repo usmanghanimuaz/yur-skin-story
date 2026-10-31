@@ -37,6 +37,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
 import { Route as AuthenticatedCheckInIndexRouteImport } from './routes/_authenticated/check-in.index'
 import { Route as AuthenticatedCheckInIdRouteImport } from './routes/_authenticated/check-in.$id'
+import { Route as ApiPublicJobsProcessPhotoDeletionsRouteImport } from './routes/api/public/jobs/process-photo-deletions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -180,6 +181,12 @@ const AuthenticatedCheckInIdRoute = AuthenticatedCheckInIdRouteImport.update({
   path: '/check-in/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicJobsProcessPhotoDeletionsRoute =
+  ApiPublicJobsProcessPhotoDeletionsRouteImport.update({
+    id: '/api/public/jobs/process-photo-deletions',
+    path: '/api/public/jobs/process-photo-deletions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in/': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -238,6 +246,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -269,6 +278,7 @@ export interface FileRoutesById {
   '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
   '/_authenticated/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/_authenticated/check-in/': typeof AuthenticatedCheckInIndexRoute
+  '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -300,6 +310,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/check-in/$id'
     | '/check-in/'
+    | '/api/public/jobs/process-photo-deletions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -329,6 +340,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/check-in/$id'
     | '/check-in'
+    | '/api/public/jobs/process-photo-deletions'
   id:
     | '__root__'
     | '/'
@@ -359,6 +371,7 @@ export interface FileRouteTypes {
     | '/_authenticated/welcome'
     | '/_authenticated/check-in/$id'
     | '/_authenticated/check-in/'
+    | '/api/public/jobs/process-photo-deletions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -377,6 +390,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicJobsProcessPhotoDeletionsRoute: typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -577,6 +591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCheckInIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/process-photo-deletions': {
+      id: '/api/public/jobs/process-photo-deletions'
+      path: '/api/public/jobs/process-photo-deletions'
+      fullPath: '/api/public/jobs/process-photo-deletions'
+      preLoaderRoute: typeof ApiPublicJobsProcessPhotoDeletionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -631,6 +652,8 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  ApiPublicJobsProcessPhotoDeletionsRoute:
+    ApiPublicJobsProcessPhotoDeletionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
