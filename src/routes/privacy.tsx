@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/app/policy";
 import { pageHead } from "@/lib/seo";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO } from "@/lib/site";
 import still from "@/assets/privacy-still.jpg";
 
 export const Route = createFileRoute("/privacy")({ head: () => pageHead("Privacy policy", "What SkinTwin collects, why, who processes it, how long it is kept and how you can delete it."), component: Page });
@@ -15,5 +16,6 @@ function Page() {
     { title: "Your choices", body: <p>Export, correct or delete your data from Settings at any time. Read <Link to="/your-data" className="text-primary underline">your data rights</Link>.</p> },
     { title: "Children", body: <p>SkinTwin is for adults. Do not upload a photo of anyone under 16, or anyone who has not agreed.</p> },
     { title: "Changes", body: <p>If we materially change this policy we will show a notice in the app before the change applies.</p> },
+    { title: "Contact", body: <p>Questions or requests about your data: <a className="text-primary underline" href={SUPPORT_MAILTO}>{SUPPORT_EMAIL}</a>.</p> },
   ]} />;
 }
