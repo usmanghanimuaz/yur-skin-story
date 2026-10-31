@@ -13,7 +13,7 @@ export function ResultsShowcase() {
   return <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
     <div className="flex flex-wrap items-end justify-between gap-5">
       <div><p className="mb-3 text-xs font-medium text-rose">REAL CHECK-INS FROM OUR ORIGINAL APP</p><h2 className="text-4xl sm:text-5xl">What a check-in looks like.</h2></div>
-      <p className="max-w-sm text-sm leading-6 text-muted-foreground">Results from the original SkinTwin app, analysed by YouCam Skin AI and shared with permission. Cosmetic estimates only — not a diagnosis.</p>
+      <p className="max-w-sm text-sm leading-6 text-muted-foreground">Results from the original SkinTwin app, analysed by YouCam Skin AI. Cosmetic estimates only — not a diagnosis.</p>
     </div>
     <div className="mt-10 grid gap-6 md:grid-cols-3">
       {RESULTS.map((r) => <figure key={r.img} className="overflow-hidden rounded-3xl border bg-card">
