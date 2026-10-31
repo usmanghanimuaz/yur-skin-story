@@ -39,7 +39,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
           <Link to="/how-it-works">How it works</Link><Link to="/guide">Photo guide</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/consent">Consent</Link><Link to="/photo-retention">Photo retention</Link><Link to="/cookies">Cookies</Link><Link to="/security">Security</Link><Link to="/your-data">Your data</Link><Link to="/accessibility">Accessibility</Link><Link to="/medical-disclaimer">Medical disclaimer</Link><Link to="/support">Support</Link>
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-2 border-t px-5 py-5 text-xs text-muted-foreground sm:px-8"><span>© 2026 SkinTwin AI</span><span>Made for your skin. Built around your privacy.</span></div>
+      <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-2 border-t px-5 py-5 text-xs text-muted-foreground sm:px-8"><span>© 2026 SkinTwin AI. All rights reserved.</span><span>Made for your skin. Built around your privacy.</span><span>Built by 321 Design House</span></div>
     </footer>
   </div>;
 }
