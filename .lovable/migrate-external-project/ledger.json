@@ -55,8 +55,8 @@
       "capability": "authorization",
       "source": "Owner scoping, profile cap, private photos",
       "outcome": "preserve",
-      "status": "in_progress",
-      "next_action": "Test ownership boundaries"
+      "status": "implemented",
+      "next_action": "admin/user roles via user_roles + has_role; verify with real accounts"
     },
     {
       "capability": "callbacks and OAuth",
@@ -70,7 +70,7 @@
       "source": "In-app reminders; scheduled email not active in source",
       "outcome": "preserve",
       "status": "in_progress",
-      "next_action": "Verify preferences and ICS"
+      "next_action": "Hourly photo-deletion retry job active; reminders are in-app only, email reminders not implemented"
     },
     {
       "capability": "cutover",
@@ -84,13 +84,40 @@
       "source": "Preview and CRUD",
       "outcome": "verify",
       "status": "in_progress",
-      "next_action": "Browser and regression checks"
+      "next_action": "Typecheck, 11 tests, public desktop/mobile browser checks pass; authenticated flows unverified (no auth users)"
+    },
+    {
+      "capability": "catalogue and evidence records",
+      "source": "Base44 inventory: 20 products, 91 availability rows (0 verified prices), 26 evidence rows seed_pending_review",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Attach CatalogueProduct, ProductAvailability, EvidenceEntry CSV exports; nothing imported or invented"
+    },
+    {
+      "capability": "legacy check-ins and people",
+      "source": "Base44 inventory: 4 YouCam check-ins, 3 person profiles, 3 quota rows",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Attach exports and photo bytes; not imported"
+    },
+    {
+      "capability": "account and photo-byte deletion",
+      "source": "Base44 audit: check-in delete did not erase bytes",
+      "outcome": "fix",
+      "status": "implemented",
+      "next_action": "Verify with a real signed-in account"
+    },
+    {
+      "capability": "locales",
+      "source": "en es fr it de pt nl ur ur-Latn",
+      "outcome": "preserve",
+      "status": "in_progress",
+      "next_action": "Shared UI translated; page bodies and policies still English"
     }
   ],
   "notes": [
-    "Frontend and schema rebuild active; full migration is incomplete.",
+    "Frontend, schema, admin, onboarding, deletion and locale shell rebuilt; full migration incomplete.",
     "Provisional fair-use defaults: 3/10 minutes, 10/day/user, 500/day/app; owner approval needed.",
-    "Public preview and sample checked in browser without runtime errors; authenticated CRUD not verified.",
-    "Translations, four-step onboarding, full guide and policy content, OAuth consent and deletion retry scheduling are still incomplete."
+    "No auth users exist yet, so authenticated CRUD and byte deletion were not verified in a browser."
   ]
 }

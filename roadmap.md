@@ -3,8 +3,14 @@
 - [x] Cloud schema, private photos, owner scoping and profile limit
 - [x] Person, product, preferences and export workflows
 - [x] YouCam server adapter, guarded real-score persistence, sample dashboard
+- [x] Admin role, catalogue/availability/evidence tables, admin panel, user catalogue with verified-price rule
+- [x] Four-step resumable onboarding
+- [x] Locale switcher for 9 locales with Urdu RTL (app navigation and shared labels)
+- [x] Account deletion with photo-byte erasure; hourly photo-deletion retry job
+- [ ] Assign first admin — needs owner to sign up first
 - [ ] Live YouCam verification — needs provider credentials
 - [ ] Existing records, users and photo import — needs source exports
-- [ ] Full locale translations, detailed guide imagery, resumed four-step onboarding, OAuth client consent and retry scheduling — remaining implementation
-- [ ] Complete authenticated flow and cross-account verification
+- [ ] Translate full page body content and policy text into all locales — remaining implementation
+- [ ] OAuth client consent flow — needs external client details
+- [ ] Authenticated end-to-end and cross-account checks, byte-deletion verification — needs a signed-up test account
 - [ ] Publishing — deferred by owner
