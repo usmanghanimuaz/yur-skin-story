@@ -539,6 +539,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin_email: { Args: { _email: string }; Returns: boolean }
       release_analysis_quota: {
         Args: { p_app: string; p_day: string; p_owner: string; p_short: string }
         Returns: undefined
