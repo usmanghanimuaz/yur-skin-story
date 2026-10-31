@@ -91,6 +91,45 @@ export type Database = {
         }
         Relationships: []
       }
+      catalogue_products: {
+        Row: {
+          actives: string
+          brand: string
+          category: string
+          created_at: string
+          id: string
+          name: string
+          pregnancy_safe: boolean | null
+          status: string
+          targets: string[]
+          updated_at: string
+        }
+        Insert: {
+          actives?: string
+          brand?: string
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          pregnancy_safe?: boolean | null
+          status?: string
+          targets?: string[]
+          updated_at?: string
+        }
+        Update: {
+          actives?: string
+          brand?: string
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          pregnancy_safe?: boolean | null
+          status?: string
+          targets?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       check_ins: {
         Row: {
           check_in_date: string
@@ -141,6 +180,39 @@ export type Database = {
           },
         ]
       }
+      evidence_entries: {
+        Row: {
+          concern: string
+          created_at: string
+          id: string
+          ingredient: string
+          reviewed_at: string | null
+          source_url: string | null
+          status: string
+          summary: string
+        }
+        Insert: {
+          concern?: string
+          created_at?: string
+          id?: string
+          ingredient: string
+          reviewed_at?: string | null
+          source_url?: string | null
+          status?: string
+          summary?: string
+        }
+        Update: {
+          concern?: string
+          created_at?: string
+          id?: string
+          ingredient?: string
+          reviewed_at?: string | null
+          source_url?: string | null
+          status?: string
+          summary?: string
+        }
+        Relationships: []
+      }
       person_profiles: {
         Row: {
           age_band: string | null
@@ -182,27 +254,33 @@ export type Database = {
       }
       photo_deletion_requests: {
         Row: {
+          attempts: number
           check_in_id: string | null
           created_at: string
           id: string
+          last_error: string | null
           owner_id: string
           photo_path: string
           processed_at: string | null
           status: string
         }
         Insert: {
+          attempts?: number
           check_in_id?: string | null
           created_at?: string
           id?: string
+          last_error?: string | null
           owner_id: string
           photo_path: string
           processed_at?: string | null
           status?: string
         }
         Update: {
+          attempts?: number
           check_in_id?: string | null
           created_at?: string
           id?: string
+          last_error?: string | null
           owner_id?: string
           photo_path?: string
           processed_at?: string | null
@@ -257,11 +335,56 @@ export type Database = {
           },
         ]
       }
+      product_availability: {
+        Row: {
+          country: string
+          created_at: string
+          currency: string | null
+          id: string
+          price: number | null
+          price_verified_at: string | null
+          product_id: string
+          retailer: string
+          url: string | null
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          price?: number | null
+          price_verified_at?: string | null
+          product_id: string
+          retailer?: string
+          url?: string | null
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          price?: number | null
+          price_verified_at?: string | null
+          product_id?: string
+          retailer?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_availability_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalogue_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           consent_version: string | null
           created_at: string
           display_name: string | null
+          locale: string
           onboarded: boolean
           onboarding_step: number
           routine_morning: string | null
@@ -275,6 +398,7 @@ export type Database = {
           consent_version?: string | null
           created_at?: string
           display_name?: string | null
+          locale?: string
           onboarded?: boolean
           onboarding_step?: number
           routine_morning?: string | null
@@ -288,6 +412,7 @@ export type Database = {
           consent_version?: string | null
           created_at?: string
           display_name?: string | null
+          locale?: string
           onboarded?: boolean
           onboarding_step?: number
           routine_morning?: string | null
@@ -384,11 +509,36 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       release_analysis_quota: {
         Args: { p_app: string; p_day: string; p_owner: string; p_short: string }
         Returns: undefined
@@ -399,7 +549,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -526,6 +676,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
