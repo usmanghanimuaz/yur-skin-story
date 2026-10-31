@@ -31,6 +31,21 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     const requested = new URLSearchParams(window.location.search).get("returnTo") ?? sessionStorage.getItem("skintwin-return");
     return requested?.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
   };
+  useEffect(() => {
+    if (mode !== "login" && mode !== "register") return;
+    let done = false;
+    const go = async () => {
+      if (done) return; done = true;
+      const target = destination(); sessionStorage.removeItem("skintwin-return");
+      if (sessionStorage.getItem("skintwin-signin-logged") !== "yes") { await logActivity("sign_in", "Signed in"); sessionStorage.setItem("skintwin-signin-logged", "yes"); }
+      await navigate({ to: target });
+    };
+    // Returning from Google: the session lands after redirect, so send signed-in users onward.
+    supabase.auth.getUser().then(({ data }) => { if (data.user) void go(); });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => { if (event === "SIGNED_IN" && session) void go(); });
+    return () => sub.subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
   const finishSignIn = async () => { await logActivity("sign_in", "Signed in"); sessionStorage.setItem("skintwin-signin-logged", "yes"); await navigate({ to: destination() }); };
   const submit = async (e: FormEvent) => {
     e.preventDefault(); setError(""); setMessage("");
@@ -61,7 +76,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   const google = async () => {
     setBusy(true); setError("");
     sessionStorage.setItem("skintwin-return", destination());
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth` });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth`, extraParams: { prompt: "select_account" } });
     if (result.error) { setError(result.error.message ?? "Google sign-in could not start."); setBusy(false); return; }
     if (!result.redirected) await finishSignIn();
   };
