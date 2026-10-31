@@ -38,16 +38,34 @@ const CATALOGUE: Entry[] = [
   { key: "vitc-radiance", concern: "radiance", ingredient: "vitamin C", title: "Vitamin C plus SPF in the morning", detail: "A common pairing for a more radiant-looking complexion.", allergens: ["ascorbic", "vitamin c"] },
 ];
 
+export type AgeGuide = { band: string; title: string; tips: string[]; preferIngredients: string[] };
+
+const AGE_GUIDES: Record<string, Omit<AgeGuide, "band">> = {
+  "under-18": { title: "Keep it simple for young skin", tips: ["A gentle cleanser, light moisturiser and SPF are usually enough.", "Avoid strong acids and retinol unless a doctor suggests them.", "Don't pick at spots; ask a dermatologist about persistent breakouts."], preferIngredients: ["broad-spectrum SPF", "ceramides", "niacinamide"] },
+  "18-24": { title: "Build the habits early", tips: ["Daily SPF now prevents most visible sun damage later.", "Lightweight, oil-free textures suit skin that gets shiny.", "Introduce one new active at a time and patch test."], preferIngredients: ["niacinamide", "salicylic acid", "broad-spectrum SPF", "hyaluronic acid"] },
+  "25-34": { title: "Prevention and hydration", tips: ["Keep SPF daily and add an antioxidant like vitamin C in the morning.", "A low-strength retinol at night is a common starting point (not in pregnancy).", "Hydration helps skin look smoother and brighter."], preferIngredients: ["vitamin C", "retinol", "hyaluronic acid", "broad-spectrum SPF"] },
+  "35-44": { title: "Support firmness and tone", tips: ["Peptides and retinol are popular for the look of fine lines.", "Even tone benefits most from steady SPF use.", "Richer moisturisers can help as skin gets drier."], preferIngredients: ["retinol", "peptides", "vitamin C", "ceramides"] },
+  "45-54": { title: "Comfort and barrier care", tips: ["Ceramide creams help skin feel comfortable and supple.", "Go slower with exfoliants; skin may be more sensitive.", "Peptides support a firmer-looking appearance."], preferIngredients: ["peptides", "ceramides", "hyaluronic acid", "broad-spectrum SPF"] },
+  "55+": { title: "Gentle, nourishing care", tips: ["Choose fragrance-free, nourishing creams for drier skin.", "Keep exfoliation occasional and mild.", "SPF and a ceramide moisturiser remain the core routine."], preferIngredients: ["ceramides", "peptides", "hyaluronic acid", "broad-spectrum SPF"] },
+};
+
+export function ageGuide(band?: string | null): AgeGuide | null {
+  const g = band ? AGE_GUIDES[band] : undefined;
+  return g ? { band: band!, ...g } : null;
+}
+
 export function buildAdvice(metrics: Metrics, safety: SafetyInputs, max = 4): Recommendation[] {
   const weak = weakestMetrics(metrics, 3);
   const allergyText = (safety.allergies ?? "").toLowerCase();
   const actives = (safety.currentActives ?? []).map((a) => a.toLowerCase());
   const picked: Recommendation[] = [];
   for (const concern of weak) {
-    for (const e of CATALOGUE.filter((c) => c.concern === concern)) {
+    const prefer = ageGuide(safety.age_band)?.preferIngredients ?? [];
+    const options = CATALOGUE.filter((c) => c.concern === concern).sort((a, b) => Number(prefer.includes(b.ingredient)) - Number(prefer.includes(a.ingredient)));
+    for (const e of options) {
       if (safety.pregnancy && e.avoidInPregnancy) continue;
       if (e.allergens?.some((a) => allergyText.includes(a)) || allergyText.includes(e.ingredient.toLowerCase())) continue;
-      if (e.minAge && safety.age_band && !e.minAge.includes(safety.age_band)) continue;
+      if (e.minAge && (safety.age_band === "under-18" || (safety.age_band && !e.minAge.includes(safety.age_band)))) continue;
       const conflict = e.conflictsWith?.find((c) => actives.some((a) => a.includes(c)));
       const { avoidInPregnancy: _a, allergens: _b, conflictsWith: _c, minAge: _d, ...rec } = e;
       picked.push(conflict ? { ...rec, caution: `You already use ${conflict}; avoid applying both in the same routine.` } : rec);
