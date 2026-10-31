@@ -132,3 +132,5 @@
   body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   h1, h2, h3, .font-display { font-family: var(--font-display); font-weight: 400; letter-spacing: 0; }
 }
+
+[dir="rtl"] body, [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: "Noto Naskh Arabic", var(--font-sans); }
