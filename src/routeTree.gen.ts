@@ -11,19 +11,24 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ConsentRouteImport } from './routes/consent'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MedicalDisclaimerRouteImport } from './routes/medical-disclaimer'
 import { Route as PhotoRetentionRouteImport } from './routes/photo-retention'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as YourDataRouteImport } from './routes/your-data'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCatalogueRouteImport } from './routes/_authenticated/catalogue'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
@@ -50,6 +55,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -58,6 +68,11 @@ const AuthRoute = AuthRouteImport.update({
 const ConsentRoute = ConsentRouteImport.update({
   id: '/consent',
   path: '/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoRoute = DemoRouteImport.update({
@@ -73,6 +88,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const GuideRoute = GuideRouteImport.update({
   id: '/guide',
   path: '/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -105,6 +125,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -113,6 +138,11 @@ const SupportRoute = SupportRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const YourDataRoute = YourDataRouteImport.update({
+  id: '/your-data',
+  path: '/your-data',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -202,19 +232,24 @@ const ApiPublicJobsProcessPhotoDeletionsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
   '/consent': typeof ConsentRoute
+  '/cookies': typeof CookiesRoute
   '/demo': typeof DemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/guide': typeof GuideRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/medical-disclaimer': typeof MedicalDisclaimerRoute
   '/photo-retention': typeof PhotoRetentionRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security': typeof SecurityRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/your-data': typeof YourDataRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/catalogue': typeof AuthenticatedCatalogueRoute
   '/compare': typeof AuthenticatedCompareRoute
@@ -234,19 +269,24 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
   '/consent': typeof ConsentRoute
+  '/cookies': typeof CookiesRoute
   '/demo': typeof DemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/guide': typeof GuideRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/medical-disclaimer': typeof MedicalDisclaimerRoute
   '/photo-retention': typeof PhotoRetentionRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security': typeof SecurityRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/your-data': typeof YourDataRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/catalogue': typeof AuthenticatedCatalogueRoute
   '/compare': typeof AuthenticatedCompareRoute
@@ -268,19 +308,24 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
   '/consent': typeof ConsentRoute
+  '/cookies': typeof CookiesRoute
   '/demo': typeof DemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/guide': typeof GuideRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/medical-disclaimer': typeof MedicalDisclaimerRoute
   '/photo-retention': typeof PhotoRetentionRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security': typeof SecurityRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/your-data': typeof YourDataRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/catalogue': typeof AuthenticatedCatalogueRoute
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
@@ -302,19 +347,24 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/accessibility'
     | '/auth'
     | '/consent'
+    | '/cookies'
     | '/demo'
     | '/forgot-password'
     | '/guide'
+    | '/how-it-works'
     | '/login'
     | '/medical-disclaimer'
     | '/photo-retention'
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/security'
     | '/support'
     | '/terms'
+    | '/your-data'
     | '/admin'
     | '/catalogue'
     | '/compare'
@@ -334,19 +384,24 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/accessibility'
     | '/auth'
     | '/consent'
+    | '/cookies'
     | '/demo'
     | '/forgot-password'
     | '/guide'
+    | '/how-it-works'
     | '/login'
     | '/medical-disclaimer'
     | '/photo-retention'
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/security'
     | '/support'
     | '/terms'
+    | '/your-data'
     | '/admin'
     | '/catalogue'
     | '/compare'
@@ -367,19 +422,24 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/accessibility'
     | '/auth'
     | '/consent'
+    | '/cookies'
     | '/demo'
     | '/forgot-password'
     | '/guide'
+    | '/how-it-works'
     | '/login'
     | '/medical-disclaimer'
     | '/photo-retention'
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/security'
     | '/support'
     | '/terms'
+    | '/your-data'
     | '/_authenticated/admin'
     | '/_authenticated/catalogue'
     | '/_authenticated/compare'
@@ -401,19 +461,24 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AccessibilityRoute: typeof AccessibilityRoute
   AuthRoute: typeof AuthRoute
   ConsentRoute: typeof ConsentRoute
+  CookiesRoute: typeof CookiesRoute
   DemoRoute: typeof DemoRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GuideRoute: typeof GuideRoute
+  HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   MedicalDisclaimerRoute: typeof MedicalDisclaimerRoute
   PhotoRetentionRoute: typeof PhotoRetentionRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SecurityRoute: typeof SecurityRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  YourDataRoute: typeof YourDataRoute
   ApiPublicJobsProcessPhotoDeletionsRoute: typeof ApiPublicJobsProcessPhotoDeletionsRoute
 }
 
@@ -433,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -445,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/consent'
       fullPath: '/consent'
       preLoaderRoute: typeof ConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo': {
@@ -466,6 +545,13 @@ declare module '@tanstack/react-router' {
       path: '/guide'
       fullPath: '/guide'
       preLoaderRoute: typeof GuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -510,6 +596,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/support': {
       id: '/support'
       path: '/support'
@@ -522,6 +615,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/your-data': {
+      id: '/your-data'
+      path: '/your-data'
+      fullPath: '/your-data'
+      preLoaderRoute: typeof YourDataRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -681,19 +781,24 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AccessibilityRoute: AccessibilityRoute,
   AuthRoute: AuthRoute,
   ConsentRoute: ConsentRoute,
+  CookiesRoute: CookiesRoute,
   DemoRoute: DemoRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   GuideRoute: GuideRoute,
+  HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   MedicalDisclaimerRoute: MedicalDisclaimerRoute,
   PhotoRetentionRoute: PhotoRetentionRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SecurityRoute: SecurityRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  YourDataRoute: YourDataRoute,
   ApiPublicJobsProcessPhotoDeletionsRoute:
     ApiPublicJobsProcessPhotoDeletionsRoute,
 }
