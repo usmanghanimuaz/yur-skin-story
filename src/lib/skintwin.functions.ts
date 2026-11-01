@@ -34,6 +34,9 @@ export const startAnalysis = createServerFn({ method: "POST" })
     const { data: file, error: fileError } = await context.supabase.storage.from("checkin-photos").download(data.photoPath);
     if (fileError || !file || file.size > 10 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("Please upload a JPG, PNG or WebP photo under 10 MB.");
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
+    const { data: control } = await admin.from("account_controls").select("blocked").eq("user_id", context.userId).maybeSingle();
+    if (control?.blocked) throw new Error("This account is paused. Please contact support.");
+    const started = Date.now();
     const windows = quotaWindows(new Date());
     const { error: quotaError } = await admin.rpc("reserve_analysis_quota", { p_owner: context.userId, p_short: windows.tenMin, p_day: windows.day, p_app: windows.appDay });
     if (quotaError) throw new Error(quotaError.message);
@@ -56,11 +59,13 @@ export const startAnalysis = createServerFn({ method: "POST" })
       const taskId = task.data?.["task_id"];
       if (typeof taskId !== "string") throw new Error("YouCam did not return an analysis reference.");
       await admin.from("photo_uploads").update({ task_id: taskId, status: "running" }).eq("id", upload.id);
+      await admin.from("scan_logs").insert({ owner_id: context.userId, stage: "start", status: "success", duration_ms: Date.now() - started });
       return { uploadId: upload.id };
     } catch (err) {
       await admin.from("photo_uploads").update({ status: "rejected" }).eq("id", upload.id);
       await admin.rpc("release_analysis_quota", { p_owner: context.userId, p_short: windows.tenMin, p_day: windows.day, p_app: windows.appDay });
       await admin.from("photo_deletion_requests").insert({ owner_id: context.userId, photo_path: data.photoPath });
+      await admin.from("scan_logs").insert({ owner_id: context.userId, stage: "start", status: "failed", detail: (err instanceof Error ? err.message : "unknown").slice(0, 200), duration_ms: Date.now() - started });
       throw err;
     }
   });
@@ -86,6 +91,7 @@ export const pollAnalysis = createServerFn({ method: "POST" })
         await admin.rpc("release_analysis_quota", { p_owner: context.userId, p_short: w.tenMin, p_day: w.day, p_app: w.appDay });
         await admin.from("photo_deletion_requests").insert({ owner_id: context.userId, photo_path: upload.photo_path });
       }
+      await admin.from("scan_logs").insert({ owner_id: context.userId, stage: "result", status: "failed", detail: "no suitable face detected" });
       throw new Error("YouCam could not detect a suitable face. Use a well-lit close-up without filters.");
     }
     const normalized = normalizeYoucamScores(result.data);
@@ -98,6 +104,7 @@ export const pollAnalysis = createServerFn({ method: "POST" })
       throw new Error("Your result could not be saved. Please retry.");
     }
     await admin.from("photo_uploads").update({ status: "analysed", check_in_id: checkIn.id }).eq("id", upload.id);
+    await admin.from("scan_logs").insert({ owner_id: context.userId, stage: "result", status: "success", detail: `score ${normalized.overall}` });
     return { status: "success", checkInId: checkIn.id };
   });
 
@@ -139,9 +146,10 @@ export const deleteAccount = createServerFn({ method: "POST" })
       const { error } = await admin.storage.from("checkin-photos").remove(paths);
       if (error) throw new Error("Photos could not be erased yet. Nothing was deleted; please retry.");
     }
-    for (const table of ["skin_advice", "advice_feedback", "check_ins", "skin_products", "photo_uploads", "photo_deletion_requests", "analysis_quota", "account_activity"] as const) {
+    for (const table of ["skin_advice", "advice_feedback", "check_ins", "skin_products", "photo_uploads", "photo_deletion_requests", "analysis_quota", "account_activity", "support_messages", "scan_logs"] as const) {
       await admin.from(table).delete().eq("owner_id", uid);
     }
+    await admin.from("account_controls").delete().eq("user_id", uid);
     await admin.from("person_profiles").delete().eq("user_id", uid);
     const { error } = await admin.auth.admin.deleteUser(uid);
     if (error) throw new Error("Your data was erased but the sign-in could not be removed. Please retry.");

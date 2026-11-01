@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { localeOverrides } from "@/lib/admin.functions";
+import { labelWithOverride, toOverrideMap, type OverrideMap } from "@/lib/locale-overrides";
 
 export const LOCALES = [
   { code: "en", label: "English" }, { code: "es", label: "Español" }, { code: "fr", label: "Français" },
@@ -26,14 +28,19 @@ export function translate(locale: string, key: Keys): string {
   return (dict as Record<string, Record<Keys, string>>)[locale]?.[key] ?? en[key];
 }
 
+/** Every word a maintainer can edit from the admin panel. */
+export const LABEL_KEYS = Object.keys(en) as Keys[];
+
 type Ctx = { locale: Locale; setLocale: (l: Locale) => void; t: (k: Keys) => string };
 const I18n = createContext<Ctx>({ locale: "en", setLocale: () => {}, t: (k) => en[k] });
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setL] = useState<Locale>("en");
+  const [overrides, setOverrides] = useState<OverrideMap>({});
   useEffect(() => { const s = localStorage.getItem("skintwin-locale"); if (s && LOCALES.some((l) => l.code === s)) setL(s as Locale); }, []);
   useEffect(() => { document.documentElement.lang = locale; document.documentElement.dir = isRtl(locale) ? "rtl" : "ltr"; }, [locale]);
+  useEffect(() => { localeOverrides().then((rows) => setOverrides(toOverrideMap(rows))).catch(() => {}); }, []);
   const setLocale = (l: Locale) => { localStorage.setItem("skintwin-locale", l); setL(l); };
-  return <I18n.Provider value={{ locale, setLocale, t: (k) => translate(locale, k) }}>{children}</I18n.Provider>;
+  return <I18n.Provider value={{ locale, setLocale, t: (k) => labelWithOverride(overrides, locale, k, translate(locale, k)) }}>{children}</I18n.Provider>;
 }
 export const useI18n = () => useContext(I18n);

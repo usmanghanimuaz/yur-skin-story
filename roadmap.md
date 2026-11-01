@@ -7,11 +7,18 @@
 - [x] Four-step resumable onboarding
 - [x] Locale switcher for 9 locales with Urdu RTL (app navigation and shared labels)
 - [x] Account deletion with photo-byte erasure; hourly photo-deletion retry job
-- [ ] Assign first admin — needs owner to sign up first
-- [x] YouCam key saved and accepted by provider
-- [ ] Full live scan with a real face photo — needs a signed-up account
+- [x] Admin email allowlist — only the two owner emails can become admin
+- [x] In-app support desk: users message from inside the app, admin replies from the inbox
+- [x] Admin deleted-photo queue with attempts, last error and manual run
+- [x] Admin accounts view with per-user scan counts and pause/resume; paused accounts cannot start a scan
+- [x] Admin scan log of every analysis attempt and outcome
+- [x] Admin catalogue bulk import from a pasted sheet
+- [x] Admin interface-label editor for all 9 locales, applied over the built-in wording
+- [x] AI scan explanation on the dashboard with age input
+- [x] Google sign-in error states and retry path
+- [x] Authenticated admin flows verified in the browser with a real session (support, reply, queue, pause guard, import, label override)
+- [ ] Full live scan with a real face photo — needs the owner to run one check-in
 - [ ] Existing records, users and photo import — needs source exports
 - [ ] Translate full page body content and policy text into all locales — remaining implementation
 - [ ] OAuth client consent flow — needs external client details
-- [ ] Authenticated end-to-end and cross-account checks, byte-deletion verification — needs a signed-up test account
 - [ ] Publishing — deferred by owner
