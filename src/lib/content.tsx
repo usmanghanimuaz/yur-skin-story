@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { contentOverrides } from "@/lib/admin.functions";
 import { contentWithOverride, toContentMap, type ContentMap } from "@/lib/content-overrides";
-import { CONTENT_DEFAULTS } from "@/lib/content";
+import { CONTENT_DEFAULTS } from "@/lib/content-defaults";
 import { useI18n } from "@/lib/i18n";
 
 type Ctx = { c: (page: string, key: string) => string; map: ContentMap };

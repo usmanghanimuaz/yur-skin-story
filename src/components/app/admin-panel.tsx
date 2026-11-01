@@ -49,8 +49,8 @@ export function OverviewNumbers() {
       <div className={card}>
         <p className="text-xs text-muted-foreground">CHECK-INS OVER THE LAST 7 DAYS</p>
         <div className="mt-4 flex h-32 items-end gap-2">{data.scans.days.map((d, i) => <div key={d} className="flex flex-1 flex-col items-center gap-2">
-          <span className="text-[11px] text-muted-foreground">{data.scans.perDay[i]}</span>
-          <div className="w-full rounded-t-lg bg-primary/80" style={{ height: `${Math.max(3, (data.scans.perDay[i] / peak) * 100)}%` }} />
+          <span className="text-[11px] text-muted-foreground">{data.scans.perDay[i] ?? 0}</span>
+          <div className="w-full rounded-t-lg bg-primary/80" style={{ height: `${Math.max(3, ((data.scans.perDay[i] ?? 0) / peak) * 100)}%` }} />
           <span className="text-[10px] text-muted-foreground">{day(d)}</span>
         </div>)}</div>
         {data.scans.byEngine.length > 0 && <p className="mt-4 text-xs text-muted-foreground">Results saved from: {data.scans.byEngine.map((e) => `${e.engine} (${e.count})`).join(", ")}</p>}

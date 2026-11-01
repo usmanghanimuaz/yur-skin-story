@@ -328,7 +328,7 @@ export const adminSetContentOverride = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     if (!CONTENT_DEFAULTS[data.page]) throw new Error("That page cannot be translated from here.");
-    if (!CONTENT_DEFAULTS[data.page][data.key]) throw new Error("That sentence is not on the page.");
+    if (!CONTENT_DEFAULTS[data.page]?.[data.key]) throw new Error("That sentence is not on the page.");
     const { error } = await context.supabase.from("content_overrides").upsert(
       { locale: data.locale, page_key: data.page, text_key: data.key, text_value: data.value, updated_at: new Date().toISOString() },
       { onConflict: "locale,page_key,text_key" },
@@ -388,7 +388,7 @@ export const adminOverview = createServerFn({ method: "GET" })
       admin.from("photo_deletion_requests").select("status, attempts"),
       admin.from("support_messages").select("status"),
       admin.from("catalogue_products").select("status"),
-      admin.from("evidence_entries").select("status"),
+      admin.from("evidence_entries").select("status, reviewed_at"),
       admin.from("profiles").select("weekly_reminder, routine_reminders"),
       admin.from("account_controls").select("blocked"),
       admin.from("analysis_quota").select("window_key, count"),
@@ -443,7 +443,7 @@ export const adminReminderCentre = createServerFn({ method: "GET" })
       admin.from("profiles").select("user_id, weekly_reminder, routine_reminders"),
       admin.from("check_ins").select("owner_id, check_in_date"),
       admin.from("account_controls").select("user_id, blocked"),
-      admin.from("reminder_deliveries").select("owner_id, kind, bucket, sent_at").order("sent_at", { ascending: false }).limit(100),
+      admin.from("reminder_deliveries").select("id, owner_id, kind, bucket, sent_at").order("sent_at", { ascending: false }).limit(100),
       emailMap(admin),
     ]);
     const latest: Record<string, string | null> = {};
