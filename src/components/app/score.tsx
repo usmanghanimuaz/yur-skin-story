@@ -57,8 +57,8 @@ export function ScoreChart({ points }: { points: { date: string; score: number }
         {sorted.map((p, i) => <circle key={`${p.date}-${i}`} cx={xs[i] ?? 0} cy={ys[i] ?? 0} r="4" fill="var(--primary)" />)}
       </svg>
       <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-        <span>{new Date(sorted[0].date).toLocaleDateString("en-GB")}</span>
-        <span>{new Date(sorted[sorted.length - 1].date).toLocaleDateString("en-GB")}</span>
+        <span>{new Date(sorted.at(0)?.date ?? "").toLocaleDateString("en-GB")}</span>
+        <span>{new Date(sorted.at(-1)?.date ?? "").toLocaleDateString("en-GB")}</span>
       </div>
     </div>
   );
