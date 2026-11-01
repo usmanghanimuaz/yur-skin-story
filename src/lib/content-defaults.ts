@@ -55,7 +55,7 @@ export const CONTENT_DEFAULTS: ContentDefaults = {
     hero_eyebrow: "HOW IT WORKS",
     hero_title: "One photo a week.",
     hero_sub: "A clearer picture.",
-    hero_lead: "Your Skin Story builds your digital skin story: a private timeline of cosmetic skin insights that helps you see what is changing and what your routine is doing.",
+    hero_lead: "Your Skin Story keeps a private timeline of cosmetic skin insights that helps you see what is changing and what your routine is doing.",
     cta_main: "Start your journey",
     cta_sample: "Explore a sample",
     steps_title: "Six simple steps",

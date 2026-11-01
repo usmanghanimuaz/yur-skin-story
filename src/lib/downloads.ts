@@ -25,5 +25,5 @@ export async function downloadPdf(person: string, checks: CheckInLite[]) {
   }
   line("Cosmetic estimates only. Not a medical device or diagnosis.");
   line("Changes can reflect lighting, pose or routine, not proven product effects.");
-  doc.save(`Your Skin Story-${person.replace(/[^a-zA-Z0-9]/g, "-")}-progress.pdf`);
+  doc.save(`Your-Skin-Story-${person.replace(/[^a-zA-Z0-9]/g, "-")}-progress.pdf`);
 }
