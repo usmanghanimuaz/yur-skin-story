@@ -9,6 +9,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { logActivity } from "@/lib/data";
 
+export function googleMessage(raw?: string | null): string {
+  const m = (raw ?? "").toLowerCase();
+  if (m.includes("access_denied") || m.includes("denied") || m.includes("cancel")) return "Google sign-in was cancelled. Choose an account and allow access to continue.";
+  if (m.includes("popup") || m.includes("closed")) return "The Google window was closed or blocked before sign-in finished. Allow pop-ups for this site and try again.";
+  if (m.includes("network") || m.includes("fetch")) return "We couldn't reach Google. Check your internet connection and try again.";
+  return "Google sign-in didn't work this time. Please try again, or use your email and password instead.";
+}
+
 export type AuthMode = "login" | "register" | "forgot" | "reset";
 export function AuthPage({ mode }: { mode: AuthMode }) {
   const [email, setEmail] = useState("");
@@ -17,6 +25,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [googleError, setGoogleError] = useState("");
   const [message, setMessage] = useState("");
   const [recovery, setRecovery] = useState(false);
   const navigate = useNavigate();
@@ -36,12 +45,24 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     let done = false;
     const go = async () => {
       if (done) return; done = true;
+      sessionStorage.removeItem("skintwin-google-pending");
       const target = destination(); sessionStorage.removeItem("skintwin-return");
       if (sessionStorage.getItem("skintwin-signin-logged") !== "yes") { await logActivity("sign_in", "Signed in"); sessionStorage.setItem("skintwin-signin-logged", "yes"); }
       await navigate({ to: target });
     };
+    // Provider errors come back in the URL query or hash.
+    const params = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
+    const urlError = params.get("error_description") ?? params.get("error");
+    if (urlError) { sessionStorage.removeItem("skintwin-google-pending"); setGoogleError(googleMessage(urlError)); }
     // Returning from Google: the session lands after redirect, so send signed-in users onward.
-    supabase.auth.getUser().then(({ data }) => { if (data.user) void go(); });
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) { void go(); return; }
+      const pending = Number(sessionStorage.getItem("skintwin-google-pending") ?? 0);
+      if (pending && !urlError) {
+        // Give a late session a moment to arrive before telling the user it failed.
+        setTimeout(() => { if (done) return; sessionStorage.removeItem("skintwin-google-pending"); if (Date.now() - pending < 10 * 60000) setGoogleError("Google sign-in didn't finish, so you're back here. This can happen if the Google window was closed or your browser blocked cookies or pop-ups."); }, 2500);
+      }
+    });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => { if (event === "SIGNED_IN" && session) void go(); });
     return () => sub.subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,11 +95,17 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     finally { setBusy(false); }
   };
   const google = async () => {
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setGoogleError("");
     sessionStorage.setItem("skintwin-return", destination());
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth`, extraParams: { prompt: "select_account" } });
-    if (result.error) { setError(result.error.message ?? "Google sign-in could not start."); setBusy(false); return; }
-    if (!result.redirected) await finishSignIn();
+    sessionStorage.setItem("skintwin-google-pending", String(Date.now()));
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth`, extraParams: { prompt: "select_account" } });
+      if (result.error) { sessionStorage.removeItem("skintwin-google-pending"); setGoogleError(googleMessage(result.error.message)); setBusy(false); return; }
+      if (!result.redirected) { sessionStorage.removeItem("skintwin-google-pending"); await finishSignIn(); }
+    } catch (err) {
+      sessionStorage.removeItem("skintwin-google-pending");
+      setGoogleError(googleMessage(err instanceof Error ? err.message : undefined)); setBusy(false);
+    }
   };
   const headings = { login: ["Welcome back.", "Your skin story is right where you left it."], register: ["Meet your skin twin.", "A little insight is the start of a little progress."], forgot: ["Let's get you back in.", "We'll send a secure link to reset your password."], reset: ["A fresh start.", "Choose a new password for your account."] };
   return <div className="flex min-h-screen flex-col"><header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-7 sm:px-8"><Brand /><Link to="/guide" className="text-sm text-muted-foreground">SkinTwin guide <ArrowUpRight className="ml-1 inline size-3" /></Link></header><main className="mx-auto w-full max-w-md flex-1 px-5 py-10"><Link to="/" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground"><ArrowLeft className="size-3" /> Back to home</Link><h1 className="text-5xl">{headings[mode][0]}</h1><p className="mt-4 text-sm leading-6 text-muted-foreground">{headings[mode][1]}</p>
