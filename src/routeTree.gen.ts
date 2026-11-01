@@ -26,6 +26,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SharedScansRouteImport } from './routes/shared-scans'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as YourDataRouteImport } from './routes/your-data'
@@ -130,6 +131,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SharedScansRoute = SharedScansRouteImport.update({
+  id: '/shared-scans',
+  path: '/shared-scans',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SupportRoute = SupportRouteImport.update({
@@ -261,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/shared-scans': typeof SharedScansRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/your-data': typeof YourDataRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/shared-scans': typeof SharedScansRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/your-data': typeof YourDataRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/shared-scans': typeof SharedScansRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/your-data': typeof YourDataRoute
@@ -382,6 +391,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/security'
+    | '/shared-scans'
     | '/support'
     | '/terms'
     | '/your-data'
@@ -421,6 +431,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/security'
+    | '/shared-scans'
     | '/support'
     | '/terms'
     | '/your-data'
@@ -461,6 +472,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/security'
+    | '/shared-scans'
     | '/support'
     | '/terms'
     | '/your-data'
@@ -502,6 +514,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
+  SharedScansRoute: typeof SharedScansRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   YourDataRoute: typeof YourDataRoute
@@ -628,6 +641,13 @@ declare module '@tanstack/react-router' {
       path: '/security'
       fullPath: '/security'
       preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shared-scans': {
+      id: '/shared-scans'
+      path: '/shared-scans'
+      fullPath: '/shared-scans'
+      preLoaderRoute: typeof SharedScansRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/support': {
@@ -839,6 +859,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
+  SharedScansRoute: SharedScansRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   YourDataRoute: YourDataRoute,
