@@ -20,6 +20,6 @@
 - [x] Admin overview numbers, reminder centre with daily job, page-text editor for all locales, and maintainer activity log
 - [x] Full live scan with a real face photo — owner ran a real YouCam check-in (78/100, 11 scores)
 - [ ] Existing records, users and photo import — needs source exports
-- [ ] Translate full page body content and policy text into all locales — remaining implementation
+- [x] Policy, consent, disclaimer, retention and support pages editable in all locales from the admin page-text editor
 - [ ] OAuth client consent flow — needs external client details
 - [x] Publishing — live and public at yur-skin-story.lovable.app
