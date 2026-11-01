@@ -1,22 +1,62 @@
 import { useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Mail, RefreshCw, ShieldAlert, Trash2, Upload, Lock, Unlock, MessageSquare } from "lucide-react";
+import { Mail, RefreshCw, ShieldAlert, Trash2, Upload, Lock, Unlock, MessageSquare, BellRing, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "./dashboard";
 import { LOCALES, LABEL_KEYS } from "@/lib/i18n";
+import { CONTENT_DEFAULTS, CONTENT_PAGES } from "@/lib/content";
+import { contentCoverage, toContentMap } from "@/lib/content-overrides";
 import {
-  adminAccounts, adminBulkImport, adminDeletionQueue, adminDeleteLocaleOverride, adminReplySupport,
-  adminRetryDeletions, adminScanLog, adminSetBlocked, adminSetLocaleOverride, adminSupportInbox, localeOverrides,
+  adminAccounts, adminActivityLog, adminBulkImport, adminDeletionQueue, adminDeleteContentOverride, adminDeleteLocaleOverride,
+  adminOverview, adminReminderCentre, adminReplySupport, adminRetryDeletions, adminScanLog, adminSendReminders,
+  adminSetBlocked, adminSetContentOverride, adminSetLocaleOverride, adminSupportInbox, contentOverrides, localeOverrides,
 } from "@/lib/admin.functions";
 
 const card = "rounded-2xl border bg-card p-5";
 const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "—");
+const day = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
 
 function Section({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
   return <section className="space-y-4"><h2 className="text-3xl">{title}</h2><p className="text-sm text-muted-foreground">{hint}</p>{children}</section>;
+}
+
+function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
+  return <div className={card}><p className="text-xs text-muted-foreground">{label}</p><p className="mt-1 font-display text-4xl">{value}</p>{hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}</div>;
+}
+
+/* --------------------------------- overview --------------------------------- */
+
+export function OverviewNumbers() {
+  const load = useServerFn(adminOverview);
+  const { data, isLoading } = useQuery({ queryKey: ["admin-overview"], queryFn: () => load() });
+  const peak = Math.max(1, ...(data?.scans.perDay ?? [1]));
+  return <Section title="How it is going" hint="A quick read of the whole app: who joined, how much it is used, and what needs your attention.">
+    {isLoading && <p className="text-sm text-muted-foreground">Counting…</p>}
+    {data && <>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat label="Accounts" value={data.accounts.total} hint={`${data.accounts.verified} verified · ${data.accounts.verifiedPercent}%`} />
+        <Stat label="Joined this week" value={data.accounts.joined7} hint="Newest first in Accounts below" />
+        <Stat label="Check-ins" value={data.scans.total} hint={`${data.scans.today} scanned today`} />
+        <Stat label="Open messages" value={data.support.open} hint={`${data.support.total} in total`} />
+        <Stat label="Photos stored" value={data.photos.stored} hint={`${data.photos.waiting} waiting to be erased`} />
+        <Stat label="Photos failing to erase" value={data.photos.failing} hint="Retried every hour" />
+        <Stat label="Paused accounts" value={data.limits.paused} hint="Cannot start a scan" />
+        <Stat label="Catalogue" value={data.catalogue.products} hint={`${data.catalogue.pendingReview} awaiting review`} />
+      </div>
+      <div className={card}>
+        <p className="text-xs text-muted-foreground">CHECK-INS OVER THE LAST 7 DAYS</p>
+        <div className="mt-4 flex h-32 items-end gap-2">{data.scans.days.map((d, i) => <div key={d} className="flex flex-1 flex-col items-center gap-2">
+          <span className="text-[11px] text-muted-foreground">{data.scans.perDay[i]}</span>
+          <div className="w-full rounded-t-lg bg-primary/80" style={{ height: `${Math.max(3, (data.scans.perDay[i] / peak) * 100)}%` }} />
+          <span className="text-[10px] text-muted-foreground">{day(d)}</span>
+        </div>)}</div>
+        {data.scans.byEngine.length > 0 && <p className="mt-4 text-xs text-muted-foreground">Results saved from: {data.scans.byEngine.map((e) => `${e.engine} (${e.count})`).join(", ")}</p>}
+      </div>
+    </>}
+  </Section>;
 }
 
 /* --------------------------------- support inbox --------------------------------- */
@@ -153,6 +193,41 @@ export function ScanLog() {
   </Section>;
 }
 
+/* --------------------------------- reminders --------------------------------- */
+
+export function ReminderCentre() {
+  const qc = useQueryClient();
+  const load = useServerFn(adminReminderCentre);
+  const send = useServerFn(adminSendReminders);
+  const { data, isLoading } = useQuery({ queryKey: ["admin-reminders"], queryFn: () => load() });
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    setBusy(true);
+    const out = await send().catch(() => null);
+    setBusy(false);
+    if (!out) { toast.error("Reminders could not be recorded."); return; }
+    toast.success(out.sent ? `${out.sent} reminder${out.sent === 1 ? "" : "s"} recorded for ${out.people} ${out.people === 1 ? "person" : "people"}.` : "No one was due for a reminder.");
+    await qc.invalidateQueries();
+  };
+  return <Section title="Reminders" hint="In-app reminders people asked for: a weekly check-in nudge and a routine nudge. Each one is recorded once per period, and a daily job runs this automatically.">
+    <div className="flex flex-wrap gap-3 text-xs">
+      <span className="rounded-full bg-secondary px-3 py-1">Weekly on: <strong>{data?.optIns.weekly ?? 0}</strong></span>
+      <span className="rounded-full bg-secondary px-3 py-1">Routine on: <strong>{data?.optIns.routine ?? 0}</strong></span>
+      <span className="rounded-full bg-secondary px-3 py-1">Due now: <strong>{data?.due.length ?? 0}</strong></span>
+      <Button size="sm" variant="outline" disabled={busy} onClick={() => void run()}><BellRing className={busy ? "animate-spin" : ""} />Send reminders now</Button>
+    </div>
+    {!isLoading && data && !data.due.length && <EmptyState title="No one is due" text="Everyone opted in has checked in within the last week." />}
+    {data?.due.length ? <div className="divide-y rounded-2xl border bg-card">{data.due.slice(0, 40).map((d) => <div key={d.user_id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+      <span className="truncate">{d.email}</span>
+      <span className="text-xs text-muted-foreground">{d.last ? `Last check-in ${when(d.last)}` : "No check-in yet"}</span>
+    </div>)}</div> : null}
+    <div className="rounded-2xl border bg-card p-4">
+      <p className="text-xs text-muted-foreground">LAST RECORDED</p>
+      {data?.recent.length ? <ul className="mt-2 space-y-1 text-xs">{data.recent.slice(0, 12).map((r) => <li key={r.id} className="flex flex-wrap justify-between gap-2"><span className="truncate">{r.email} · <span className="capitalize">{r.kind}</span></span><span className="text-muted-foreground">{when(r.sent_at)}</span></li>)}</ul> : <p className="mt-2 text-xs text-muted-foreground">Nothing recorded yet.</p>}
+    </div>
+  </Section>;
+}
+
 /* --------------------------------- bulk import --------------------------------- */
 
 const IMPORT_EXAMPLE = "name,brand,category,actives,country,retailer,price,currency,url\nHydrating Serum,Example Lab,serum,hyaluronic acid,Pakistan,Example Store,2499,PKR,https://example.com";
@@ -218,14 +293,80 @@ export function TranslationEditor() {
   </Section>;
 }
 
+/* ------------------------------- page wording ------------------------------- */
+
+export function PageTextEditor() {
+  const qc = useQueryClient();
+  const load = useServerFn(contentOverrides);
+  const save = useServerFn(adminSetContentOverride);
+  const remove = useServerFn(adminDeleteContentOverride);
+  const { data = [] } = useQuery({ queryKey: ["content-overrides"], queryFn: () => load() });
+  const [locale, setLocale] = useState<string>(LOCALES[0]?.code ?? "en");
+  const [page, setPage] = useState<string>(CONTENT_PAGES[0] ?? "landing");
+  const keys = Object.keys(CONTENT_DEFAULTS[page] ?? {});
+  const [key, setKey] = useState<string>(keys[0] ?? "");
+  const [value, setValue] = useState("");
+  const map = toContentMap(data);
+  const coverage = contentCoverage(map, locale, page, CONTENT_DEFAULTS[page] ?? {});
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!value.trim()) { toast.error("Write the wording first."); return; }
+    try {
+      await save({ data: { locale, page, key, value } });
+      toast.success("Page wording saved.");
+      setValue("");
+      await qc.invalidateQueries();
+    } catch (e) { toast.error(e instanceof Error ? e.message : "The wording could not be saved."); }
+  };
+  const mine = data.filter((r) => r.locale === locale && r.page_key === page);
+  return <Section title="Page text" hint={`Write the marketing pages in any language. ${coverage.done} of ${coverage.total} sentences on this page are written for this language.`}>
+    <form onSubmit={submit} className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-3">
+        <select aria-label="Language" value={locale} onChange={(e) => setLocale(e.target.value)} className="h-11 rounded-xl border bg-card px-3 text-sm">{LOCALES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}</select>
+        <select aria-label="Page" value={page} onChange={(e) => { setPage(e.target.value); setKey(Object.keys(CONTENT_DEFAULTS[e.target.value] ?? {})[0] ?? ""); }} className="h-11 rounded-xl border bg-card px-3 text-sm">{CONTENT_PAGES.map((p) => <option key={p} value={p}>{p}</option>)}</select>
+        <select aria-label="Sentence" value={key} onChange={(e) => setKey(e.target.value)} className="h-11 rounded-xl border bg-card px-3 text-sm">{keys.map((k) => <option key={k} value={k}>{k}</option>)}</select>
+      </div>
+      <p className="rounded-xl bg-secondary/60 p-3 text-xs leading-6 text-muted-foreground"><span className="font-medium text-foreground">Built-in wording: </span>{CONTENT_DEFAULTS[page]?.[key] ?? "—"}</p>
+      <textarea aria-label="Page wording" value={value} onChange={(e) => setValue(e.target.value)} rows={3} placeholder="Write this sentence in the chosen language…" className="w-full rounded-xl border bg-card p-3 text-sm" />
+      <Button type="submit" className="w-fit"><FileText />Save wording</Button>
+    </form>
+    <div className="divide-y rounded-2xl border bg-card">{mine.length ? mine.map((r) => <div key={`${r.locale}-${r.page_key}-${r.text_key}`} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+      <span className="min-w-0"><span className="text-xs text-muted-foreground">{r.text_key}</span><br /><strong>{r.text_value}</strong></span>
+      <Button size="sm" variant="ghost" aria-label={`Remove ${r.text_key}`} onClick={async () => { await remove({ data: { locale: r.locale, page: r.page_key, key: r.text_key } }); await qc.invalidateQueries(); }}><Trash2 /></Button>
+    </div>) : <p className="px-4 py-4 text-sm text-muted-foreground">No written wording for this page and language yet.</p>}</div>
+  </Section>;
+}
+
+/* ------------------------------- activity log ------------------------------- */
+
+export function ActivityLog() {
+  const load = useServerFn(adminActivityLog);
+  const { data = [], isLoading } = useQuery({ queryKey: ["admin-activity"], queryFn: () => load() });
+  return <Section title="Activity log" hint="Every change made from this page, with who made it and when. Nothing here can be edited or removed.">
+    {!data.length && !isLoading && <EmptyState title="Nothing recorded yet" text="Maintainer changes will appear here." />}
+    <div className="divide-y rounded-2xl border bg-card">{data.slice(0, 60).map((r) => <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+      <span className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="size-1.5 shrink-0 rounded-full bg-primary" />
+        <span className="font-medium">{r.action.replace(/_/g, " ")}</span>
+        {r.target && <span className="truncate text-xs text-muted-foreground">{r.target}</span>}
+      </span>
+      <span className="text-xs text-muted-foreground">{r.actor_email ?? "unknown"} · {when(r.created_at)}{r.detail ? ` · ${r.detail}` : ""}</span>
+    </div>)}</div>
+  </Section>;
+}
+
 export function AdminSections() {
   return <div className="space-y-14">
+    <OverviewNumbers />
     <SupportInbox />
     <DeletionQueue />
     <AccountsPanel />
     <ScanLog />
+    <ReminderCentre />
     <BulkImport />
     <TranslationEditor />
+    <PageTextEditor />
+    <ActivityLog />
     <p className="flex items-center gap-2 text-xs text-muted-foreground"><ShieldAlert className="size-4" /> Every change here is checked against your maintainer role on the server.</p>
   </div>;
 }
