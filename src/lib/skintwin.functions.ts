@@ -25,7 +25,7 @@ async function youcam(path: string, key: string, body?: unknown) {
 
 export const startAnalysis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ profileId: uuid, photoPath: z.string().min(1).max(300), notes: z.string().max(1000).default("") }).parse(input))
+  .validator((input: unknown) => z.object({ profileId: uuid, photoPath: z.string().min(1).max(300), notes: z.string().max(1000).default("") }).parse(input))
   .handler(async ({ data, context }) => {
     const key = process.env["YOUCAM_API_KEY"];
     if (!key) throw new Error("Live analysis is not connected yet. Sample mode never saves a real scan.");
@@ -72,7 +72,7 @@ export const startAnalysis = createServerFn({ method: "POST" })
 
 export const pollAnalysis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ uploadId: uuid }).parse(input))
+  .validator((input: unknown) => z.object({ uploadId: uuid }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
     const { data: upload } = await admin.from("photo_uploads").select("*").eq("id", data.uploadId).eq("owner_id", context.userId).single();
@@ -110,7 +110,7 @@ export const pollAnalysis = createServerFn({ method: "POST" })
 
 export const deleteRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ kind: z.enum(["check-in", "person"]), id: uuid }).parse(input))
+  .validator((input: unknown) => z.object({ kind: z.enum(["check-in", "person"]), id: uuid }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows } = await context.supabase.from("check_ins").select("id,photo_path").eq(data.kind === "person" ? "profile_id" : "id", data.id).eq("owner_id", context.userId);
     if (data.kind === "person") {
@@ -135,7 +135,7 @@ export const deleteRecord = createServerFn({ method: "POST" })
 
 export const deleteAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ confirm: z.literal("DELETE") }).parse(input))
+  .validator((input: unknown) => z.object({ confirm: z.literal("DELETE") }).parse(input))
   .handler(async ({ context }) => {
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
     const uid = context.userId;
@@ -165,7 +165,7 @@ export const myRole = createServerFn({ method: "GET" })
 
 export const getAdvice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ checkInId: uuid }).parse(input))
+  .validator((input: unknown) => z.object({ checkInId: uuid }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: checkIn } = await context.supabase.from("check_ins").select("metrics,profile_id").eq("id", data.checkInId).single();
     if (!checkIn) throw new Error("Check-in not found.");

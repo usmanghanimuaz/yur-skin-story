@@ -61,7 +61,7 @@ function publicClient() {
 
 export const submitSupportMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ subject: z.string().min(1).max(300), body: z.string().min(1).max(8000) }).parse(input))
+  .validator((input: unknown) => z.object({ subject: z.string().min(1).max(300), body: z.string().min(1).max(8000) }).parse(input))
   .handler(async ({ data, context }) => {
     const problem = supportDraftError(data);
     if (problem) throw new Error(problem);
@@ -94,7 +94,7 @@ export const adminSupportInbox = createServerFn({ method: "GET" })
 
 export const adminReplySupport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ id: uuid, reply: z.string().min(1).max(REPLY_MAX), close: z.boolean().default(false) }).parse(input))
+  .validator((input: unknown) => z.object({ id: uuid, reply: z.string().min(1).max(REPLY_MAX), close: z.boolean().default(false) }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.from("support_messages").update({
@@ -193,7 +193,7 @@ export const adminAccounts = createServerFn({ method: "GET" })
 
 export const adminSetBlocked = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ userId: uuid, blocked: z.boolean(), reason: z.string().max(300).default("") }).parse(input))
+  .validator((input: unknown) => z.object({ userId: uuid, blocked: z.boolean(), reason: z.string().max(300).default("") }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     if (data.userId === context.userId) throw new Error("You cannot pause your own account.");
@@ -231,7 +231,7 @@ export const adminScanLog = createServerFn({ method: "GET" })
 
 export const adminBulkImport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ csv: z.string().min(1).max(200000) }).parse(input))
+  .validator((input: unknown) => z.object({ csv: z.string().min(1).max(200000) }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const parsed = parseCatalogueCsv(data.csv);
@@ -285,7 +285,7 @@ export const localeOverrides = createServerFn({ method: "GET" }).handler(async (
 
 export const adminSetLocaleOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ locale: z.string().min(2).max(10), key: z.string().min(1).max(60), value: z.string().min(1).max(400) }).parse(input))
+  .validator((input: unknown) => z.object({ locale: z.string().min(2).max(10), key: z.string().min(1).max(60), value: z.string().min(1).max(400) }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.from("locale_overrides").upsert(
@@ -300,7 +300,7 @@ export const adminSetLocaleOverride = createServerFn({ method: "POST" })
 
 export const adminDeleteLocaleOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ locale: z.string().min(2).max(10), key: z.string().min(1).max(60) }).parse(input))
+  .validator((input: unknown) => z.object({ locale: z.string().min(2).max(10), key: z.string().min(1).max(60) }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.from("locale_overrides").delete().eq("locale", data.locale).eq("label_key", data.key);
@@ -319,7 +319,7 @@ export const contentOverrides = createServerFn({ method: "GET" }).handler(async 
 
 export const adminSetContentOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({
+  .validator((input: unknown) => z.object({
     locale: z.string().min(2).max(10),
     page: z.string().min(1).max(60),
     key: z.string().min(1).max(60),
@@ -341,7 +341,7 @@ export const adminSetContentOverride = createServerFn({ method: "POST" })
 
 export const adminDeleteContentOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ locale: z.string().min(2).max(10), page: z.string().min(1).max(60), key: z.string().min(1).max(60) }).parse(input))
+  .validator((input: unknown) => z.object({ locale: z.string().min(2).max(10), page: z.string().min(1).max(60), key: z.string().min(1).max(60) }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.from("content_overrides").delete().eq("locale", data.locale).eq("page_key", data.page).eq("text_key", data.key);
@@ -365,7 +365,7 @@ export const adminActivityLog = createServerFn({ method: "GET" })
 /** Lets the catalogue maintainer panel record what it changed without trusting the browser. */
 export const logAdminAction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ action: z.string().min(2).max(60), target: z.string().max(160).default(""), detail: z.string().max(300).default("") }).parse(input))
+  .validator((input: unknown) => z.object({ action: z.string().min(2).max(60), target: z.string().max(160).default(""), detail: z.string().max(300).default("") }).parse(input))
   .handler(async ({ data, context }) => {
     const actorEmail = await requireAdmin(context.supabase, context.userId);
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
