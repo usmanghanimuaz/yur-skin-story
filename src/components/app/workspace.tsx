@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { Camera, Plus, Trash2, Download, Loader2, ArrowUpRight } from 'lucide-react';
+import { Camera, Plus, Trash2, Download, Loader2, ArrowUpRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +13,8 @@ import { deleteRecord, analysisStatus, startAnalysis, pollAnalysis, deleteAccoun
 import { downloadBlob, downloadPdf } from '@/lib/downloads';
 import { buildRoutineIcs, productImpact } from '@/lib/products';
 import { METRICS, type Metrics } from '@/lib/skin';
-import { ScoreRing, MetricGrid, CheckInPhoto } from './score';
+import { ScoreRing, MetricGrid, CheckInPhoto, ScoreChart } from './score';
+import { Disclaimer } from './brand';
 import { EmptyState } from './dashboard';
 import { toast } from 'sonner';
 
@@ -23,6 +24,7 @@ export function Workspace({ view, id }: { view:string; id?:string }) {
  const qc=useQueryClient(); const navigate=useNavigate();
  const [error,setError]=useState(''); const [busy,setBusy]=useState(false); const [limit,setLimit]=useState(50);
  const [a,setA]=useState(''); const [b,setB]=useState('');
+ const [photo,setPhoto]=useState<File|null>(null); const [preview,setPreview]=useState(''); const [photoOk,setPhotoOk]=useState(false);
  const {data:checks=[]}=useQuery(checkInsOptions(active?.id ?? '',limit));
  const {data:products=[]}=useQuery(productsOptions(active?.id ?? ''));
  const {data:acct}=useQuery(accountOptions);

@@ -23,6 +23,7 @@ export function Landing() {
           <p className="mt-6 max-w-sm text-base leading-7 text-muted-foreground">{c("landing", "hero_lead")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3"><Button asChild size="lg" className="h-12 rounded-full px-6"><Link to="/register">{c("landing", "hero_cta_main")} <ArrowUpRight /></Link></Button><Button asChild variant="outline" size="lg" className="h-12 rounded-full bg-background/70 px-5"><Link to="/demo">{c("landing", "hero_cta_sample")} <ArrowRight /></Link></Button></div>
           <div className="mt-6 flex items-center gap-4 text-xs text-muted-foreground"><span className="flex items-center gap-1.5"><Check className="size-3.5 text-primary" /> {c("landing", "hero_point_1")}</span><span className="flex items-center gap-1.5"><LockKeyhole className="size-3.5 text-primary" /> {c("landing", "hero_point_2")}</span></div>
+          <p className="mt-4 max-w-md text-xs leading-5 text-muted-foreground">{c("landing", "hero_trust")}</p>
         </div>
         <div className="absolute bottom-9 right-7 hidden w-56 rounded-2xl border bg-card/95 p-4 shadow-lg lg:block">
           <div className="mb-3 flex justify-between text-xs"><span className="font-medium">{c("landing", "snapshot_title")}</span><span className="text-muted-foreground">SAMPLE</span></div>
