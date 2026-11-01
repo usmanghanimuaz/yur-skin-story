@@ -14,5 +14,5 @@ export function TranslatedPolicy({ page, image, extras = {} }: { page: string; i
     const text = lines.length > 1 ? <ul>{lines.map((l) => <li key={l}>{l}</li>)}</ul> : <p>{lines[0]}</p>;
     return { title: c(page, `s${n}_title`), body: <>{text}{extras[n]}</> };
   });
-  return <PolicyPage eyebrow={c(page, "eyebrow")} title={c(page, "title")} intro={c(page, "intro")} image={image} sections={sections} />;
+  return <PolicyPage eyebrow={c(page, "eyebrow")} title={c(page, "title")} intro={c(page, "intro")} {...(image ? { image } : {})} sections={sections} />;
 }
