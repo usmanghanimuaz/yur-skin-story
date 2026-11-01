@@ -20,3 +20,5 @@
 - UI locale strings live in `src/lib/i18n.tsx`; `ur` sets RTL on the document, because Urdu script must render right-to-left.
 - Page sentences live once in `src/lib/content-defaults.ts` and are merged with maintainer edits by the provider in `src/lib/content.tsx`, because pages must still render built-in wording when nothing is edited and never carry a second copy of the text.
 - Reminder eligibility rules live in `src/lib/reminders.ts` and one shared pass in `src/lib/reminders.server.ts` serves both the admin button and the scheduled job, because a reminder must be recorded once per period no matter who triggers it.
+- Server functions validate input with `.validator(...)` (not the older `.inputValidator(...)`), because the pinned TanStack Start release renamed that builder method.
+
