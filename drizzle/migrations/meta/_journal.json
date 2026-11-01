@@ -36,6 +36,13 @@
       "when": 1793562252911,
       "tag": "0004_admin_support_queue_controls_labels",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793562326830,
+      "tag": "0005_admin_queue_and_quota_reads",
+      "breakpoints": true
     }
   ]
 }
