@@ -50,6 +50,13 @@
       "when": 1793563962774,
       "tag": "0006_admin_activity_reminders_content",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793565115028,
+      "tag": "0007_share_scans_opt_in",
+      "breakpoints": true
     }
   ]
 }

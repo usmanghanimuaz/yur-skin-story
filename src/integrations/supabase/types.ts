@@ -489,6 +489,8 @@ export type Database = {
           routine_morning: string | null
           routine_night: string | null
           routine_reminders: boolean
+          share_scans: boolean
+          share_scans_at: string | null
           updated_at: string
           user_id: string
           weekly_reminder: boolean
@@ -503,6 +505,8 @@ export type Database = {
           routine_morning?: string | null
           routine_night?: string | null
           routine_reminders?: boolean
+          share_scans?: boolean
+          share_scans_at?: string | null
           updated_at?: string
           user_id: string
           weekly_reminder?: boolean
@@ -517,6 +521,8 @@ export type Database = {
           routine_morning?: string | null
           routine_night?: string | null
           routine_reminders?: boolean
+          share_scans?: boolean
+          share_scans_at?: string | null
           updated_at?: string
           user_id?: string
           weekly_reminder?: boolean
