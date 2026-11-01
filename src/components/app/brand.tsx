@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import logoAsset from "@/assets/skin-story-logo.png.asset.json";
 
 export function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-2" aria-label="Your Skin Story home">
-      <span className="grid size-9 place-items-center rounded-full bg-primary font-display text-xl text-primary-foreground">S</span>
+    <Link to="/" className="flex items-center gap-2.5" aria-label="Your Skin Story home">
+      <img src={logoAsset.url} alt="" width={40} height={40} className="size-10 shrink-0 rounded-full" />
       <span className="font-display text-2xl leading-none">Your Skin <span className="text-rose">Story</span></span>
     </Link>
   );
