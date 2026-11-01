@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-## SkinTwin architecture
+## Your Skin Story architecture
 - Keep public content at top-level TanStack routes and private account surfaces under the managed `_authenticated` boundary, because browser sessions are not available during SSR.
 - Use Cloud RLS for owner reads and ordinary edits; score-bearing analysis and photo erasure use authenticated server functions, because browser writes must not forge provider results.
 - Keep illustrative sample data browser-only and explicitly labelled, because sample scores must never become saved real check-ins.

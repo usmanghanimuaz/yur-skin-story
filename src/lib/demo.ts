@@ -1,5 +1,5 @@
 import type { Metrics } from "./skin";
-import portrait from "@/assets/skintwin-portrait.jpg";
+import portrait from "@/assets/skin-story-portrait.jpg";
 
 export const demoPhoto = portrait;
 export const demoPerson = { id: "demo", name: "Me", skin_type: "Combination", pregnancy: false, allergies: "", age_band: "25-34", country: "Pakistan" };

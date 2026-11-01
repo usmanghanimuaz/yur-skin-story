@@ -1,4 +1,4 @@
-# SkinTwin rebuild
+# Your Skin Story rebuild
 - [x] Public landing, policy pages, login and protected page structure
 - [x] Cloud schema, private photos, owner scoping and profile limit
 - [x] Person, product, preferences and export workflows
