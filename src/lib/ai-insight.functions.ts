@@ -16,7 +16,7 @@ export const explainScan = createServerFn({ method: "POST" })
     const metrics = (checkIn.metrics ?? {}) as Metrics;
     const lines = METRICS.filter((m) => typeof metrics[m.key] === "number").map((m) => `${m.label}: ${metrics[m.key]}/100`).join("\n");
     if (!lines) return { error: "This check-in has no scores to explain yet." };
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env['LOVABLE_API_KEY'];
     if (!apiKey) return { error: "AI insights aren't configured yet." };
 
     const { createOpenAI } = await import("@ai-sdk/openai");
