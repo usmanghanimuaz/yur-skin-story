@@ -17,6 +17,7 @@
 - [x] AI scan explanation on the dashboard with age input
 - [x] Google sign-in error states and retry path
 - [x] Authenticated admin flows verified in the browser with a real session (support, reply, queue, pause guard, import, label override)
+- [x] Admin overview numbers, reminder centre with daily job, page-text editor for all locales, and maintainer activity log
 - [ ] Full live scan with a real face photo — needs the owner to run one check-in
 - [ ] Existing records, users and photo import — needs source exports
 - [ ] Translate full page body content and policy text into all locales — remaining implementation
