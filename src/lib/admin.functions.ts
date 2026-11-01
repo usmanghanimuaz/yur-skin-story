@@ -5,7 +5,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { canStartSupportThread, supportDraftError } from "./support";
 import { parseCatalogueCsv, rowHasListing } from "./import-csv";
-import { contentCoverage } from "./content-overrides";
 import { CONTENT_DEFAULTS } from "./content";
 import { reminderOptIns, weeklyDue } from "./reminders";
 import { countPerDay, percent, recentDays } from "./overview";
@@ -484,19 +483,3 @@ export const adminSendReminders = createServerFn({ method: "POST" })
 
 /* ------------------------------- translation map ------------------------------ */
 
-export const adminTranslationStatus = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    await requireAdmin(context.supabase, context.userId);
-    const rows = await contentOverrides();
-    const map: Record<string, Record<string, Record<string, string>>> = {};
-    for (const row of rows) ((map[row.locale] ??= {})[row.page_key] ??= {})[row.text_key] = row.text_value;
-    return Object.fromEntries(
-      Object.keys(CONTENT_DEFAULTS).map((page) => [page, Object.fromEntries(
-        Object.keys(CONTENT_DEFAULTS[page]).map((key) => [key, Object.keys(map).map((locale) => {
-          const value = map[locale]?.[page]?.[key] ?? "";
-          return { locale, done: Boolean(value.trim()) };
-        })]),
-      )]),
-    );
-  });
