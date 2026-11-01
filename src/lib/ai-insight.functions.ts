@@ -8,7 +8,7 @@ const input = z.object({ checkInId: z.string().uuid(), age: z.number().int().min
 /** Non-diagnostic AI explanation of the caller's own latest scan. Reads metrics server-side via RLS so they cannot be forged. */
 export const explainScan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((v: unknown) => input.parse(v))
+  .validator((v: unknown) => input.parse(v))
   .handler(async ({ data, context }) => {
     const { data: checkIn } = await context.supabase.from("check_ins").select("metrics,overall_score,profile_id").eq("id", data.checkInId).single();
     if (!checkIn) return { error: "We couldn't find that check-in." };

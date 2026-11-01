@@ -6,7 +6,7 @@ export type SharedScan = { id: string; name: string; score: number; metrics: Rec
 
 // Public: returns only scans whose owners explicitly opted in. Photos get short-lived signed links.
 export const listSharedScans = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ limit: z.number().int().min(1).max(100).optional() }).parse(d ?? {}))
+  .validator((d: unknown) => z.object({ limit: z.number().int().min(1).max(100).optional() }).parse(d ?? {}))
   .handler(async ({ data }): Promise<SharedScan[]> => {
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
     const { data: owners } = await admin.from("profiles").select("user_id").eq("share_scans", true).limit(500);
