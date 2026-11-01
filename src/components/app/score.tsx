@@ -33,9 +33,33 @@ export function MetricGrid({ metrics, previous }: { metrics: Metrics; previous?:
             <div className="flex items-start justify-between gap-2"><span className="text-sm text-muted-foreground">{m.label}</span>{previous && <Delta value={delta(v, previous[m.key])} />}</div>
             <div className="mt-2 font-display text-3xl">{typeof v === "number" ? v : "—"}</div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-primary" style={{ width: `${v ?? 0}%` }} /></div>
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">{m.description}</p>
+            <p className="mt-2 text-xs leading-5"><span className="font-medium">Small step:</span> {m.tip}</p>
           </div>
         );
       })}
+    </div>
+  );
+}
+
+/** Simple overall-score history chart, oldest to newest. */
+export function ScoreChart({ points }: { points: { date: string; score: number }[] }) {
+  const sorted = [...points].sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  if (sorted.length < 2) return null;
+  const w = 640, h = 180, pad = 30;
+  const xs = sorted.map((_, i) => pad + (i * (w - 2 * pad)) / (sorted.length - 1));
+  const ys = sorted.map((p) => h - pad - (p.score / 100) * (h - 2 * pad));
+  return (
+    <div className="rounded-2xl border bg-card p-5">
+      <p className="text-xs text-muted-foreground">Score history</p>
+      <svg viewBox={`0 0 ${w} ${h}`} className="mt-3 w-full" role="img" aria-label="Overall score history chart">
+        <polyline points={xs.map((x, i) => `${x},${ys[i] ?? 0}`).join(" ")} fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinejoin="round" />
+        {sorted.map((p, i) => <circle key={`${p.date}-${i}`} cx={xs[i] ?? 0} cy={ys[i] ?? 0} r="4" fill="var(--primary)" />)}
+      </svg>
+      <div className="mt-2 flex justify-between text-xs text-muted-foreground">
+        <span>{new Date(sorted.at(0)?.date ?? "").toLocaleDateString("en-GB")}</span>
+        <span>{new Date(sorted.at(-1)?.date ?? "").toLocaleDateString("en-GB")}</span>
+      </div>
     </div>
   );
 }

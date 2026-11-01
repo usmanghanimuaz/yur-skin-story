@@ -12,6 +12,7 @@ export const CONTENT_DEFAULTS: ContentDefaults = {
     hero_cta_sample: "Explore a sample",
     hero_point_1: "No guesswork",
     hero_point_2: "Private by design",
+    hero_trust: "Private photos · Viewing links expire within 1 hour · Delete anytime · Photos go to YouCam only for analysis · Never sold, never used to train models.",
     snapshot_title: "Your skin snapshot",
     snapshot_note: "Small habits. Visible progress.",
     strip_title: "A MORE PERSONAL APPROACH TO SKINCARE",
