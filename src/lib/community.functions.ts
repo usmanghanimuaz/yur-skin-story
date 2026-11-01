@@ -21,7 +21,7 @@ export const listSharedScans = createServerFn({ method: "GET" })
     const picked = pickSharedScans(rows ?? [], people ?? [], new Set(ids.filter((i) => !paused.has(i))), data.limit);
     const out: SharedScan[] = [];
     for (const p of picked) {
-      const { data: s } = await admin.storage.from("checkin-photos").createSignedUrl(p.photo_path!, 3600);
+      const { data: s } = await admin.storage.from("checkin-photos").createSignedUrl(p.photo_path!, 300);
       if (!s?.signedUrl) continue;
       const m = (p.metrics && typeof p.metrics === "object" ? p.metrics : {}) as Record<string, number>;
       out.push({ id: p.id, name: p.name, score: p.overall_score, metrics: m, date: p.check_in_date, photoUrl: s.signedUrl });
