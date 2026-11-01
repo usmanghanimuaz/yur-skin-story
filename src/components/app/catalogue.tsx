@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { logAdminAction } from "@/lib/admin.functions";
 import { Plus, Trash2, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,9 +44,16 @@ export function Catalogue() {
 
 export function AdminPanel() {
   const qc = useQueryClient();
+  const record = useServerFn(logAdminAction);
   const { data: products = [] } = useQuery(catalogueOptions);
   const { data: evidence = [] } = useQuery({ queryKey: ["evidence"], queryFn: async () => { const { data, error } = await supabase.from("evidence_entries").select("*").order("created_at", { ascending: false }); if (error) throw error; return data; } });
-  const run = async (fn: () => PromiseLike<{ error: unknown }>, ok: string) => { const { error } = await fn(); if (error) { toast.error((error as Error).message ?? "Not allowed"); return; } toast.success(ok); await qc.invalidateQueries(); };
+  const run = async (fn: () => PromiseLike<{ error: unknown }>, ok: string, note?: { action: string; target?: string; detail?: string }) => {
+    const { error } = await fn();
+    if (error) { toast.error((error as Error).message ?? "Not allowed"); return; }
+    toast.success(ok);
+    if (note) await record({ data: { action: note.action, target: note.target ?? "", detail: note.detail ?? "" } }).catch(() => {});
+    await qc.invalidateQueries();
+  };
   const addProduct = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget; void run(() => supabase.from("catalogue_products").insert({ name: String(f.get("name")), brand: String(f.get("brand")), category: String(f.get("category")), actives: String(f.get("actives")), pregnancy_safe: f.get("preg") === "on" ? true : null }), "Product added").then(() => form.reset()); };
   const addAvail = (e: FormEvent<HTMLFormElement>, id: string) => { e.preventDefault(); const f = new FormData(e.currentTarget); const price = String(f.get("price")); const verified = f.get("verified") === "on"; void run(() => supabase.from("product_availability").insert({ product_id: id, country: String(f.get("country")), retailer: String(f.get("retailer")), price: price ? Number(price) : null, currency: String(f.get("currency")) || null, price_verified_at: verified && price ? new Date().toISOString() : null, url: String(f.get("url")) || null }), "Availability added"); };
   const addEvidence = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); void run(() => supabase.from("evidence_entries").insert({ ingredient: String(f.get("ingredient")), concern: String(f.get("concern")), summary: String(f.get("summary")), source_url: String(f.get("source")) || null }), "Evidence added"); };
