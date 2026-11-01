@@ -16,12 +16,11 @@ export function contentWithOverride(map: ContentMap, locale: string, page: strin
   return value && value.trim() ? value : fallback;
 }
 
-/** How much of a page is translated into a language, for the admin progress line. */
-export function contentCoverage(map: ContentMap, locale: string, defaults: Record<string, string>): { done: number; total: number } {
+/** How much of one page is translated into a language, for the admin progress line. */
+export function contentCoverage(map: ContentMap, locale: string, page: string, defaults: Record<string, string>): { done: number; total: number } {
   const keys = Object.keys(defaults);
-  const edited = map[locale]?.[Object.keys(map[locale] ?? {})[0]] ?? {};
-  const done = keys.filter((k) => (map[locale]?.[Object.keys(map[locale] ?? {})[0]]?.[k] ?? edited[k] ?? "").trim()).length;
-  return { done, total: keys.length };
+  const edited = map[locale]?.[page] ?? {};
+  return { done: keys.filter((k) => (edited[k] ?? "").trim()).length, total: keys.length };
 }
 
 /** Total number of edited page sentences across every language. */
