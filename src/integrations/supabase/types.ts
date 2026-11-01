@@ -38,6 +38,30 @@ export type Database = {
         }
         Relationships: []
       }
+      account_controls: {
+        Row: {
+          blocked: boolean
+          reason: string | null
+          set_at: string
+          set_by: string | null
+          user_id: string
+        }
+        Insert: {
+          blocked?: boolean
+          reason?: string | null
+          set_at?: string
+          set_by?: string | null
+          user_id: string
+        }
+        Update: {
+          blocked?: boolean
+          reason?: string | null
+          set_at?: string
+          set_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       advice_feedback: {
         Row: {
           check_in_id: string
@@ -210,6 +234,27 @@ export type Database = {
           source_url?: string | null
           status?: string
           summary?: string
+        }
+        Relationships: []
+      }
+      locale_overrides: {
+        Row: {
+          label_key: string
+          label_value: string
+          locale: string
+          updated_at: string
+        }
+        Insert: {
+          label_key: string
+          label_value: string
+          locale: string
+          updated_at?: string
+        }
+        Update: {
+          label_key?: string
+          label_value?: string
+          locale?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -424,6 +469,36 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_logs: {
+        Row: {
+          created_at: string
+          detail: string | null
+          duration_ms: number | null
+          id: string
+          owner_id: string
+          stage: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          duration_ms?: number | null
+          id?: string
+          owner_id: string
+          stage: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          duration_ms?: number | null
+          id?: string
+          owner_id?: string
+          stage?: string
+          status?: string
+        }
+        Relationships: []
+      }
       skin_advice: {
         Row: {
           check_in_id: string
@@ -508,6 +583,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      support_messages: {
+        Row: {
+          admin_reply: string | null
+          body: string
+          created_at: string
+          id: string
+          owner_id: string
+          replied_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          replied_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          admin_reply?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          replied_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
