@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { I18nProvider } from "@/lib/i18n";
+import { ContentProvider } from "@/lib/content";
 
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
