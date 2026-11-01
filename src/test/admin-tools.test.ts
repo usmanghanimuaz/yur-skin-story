@@ -57,7 +57,7 @@ describe("catalogue bulk import sheet", () => {
   it("keeps a product with no country as product-only", () => {
     const out = parseCatalogueCsv("Aurora Gel,Lab,gel,niacinamide");
     expect(out.rows).toHaveLength(1);
-    expect(rowHasListing(out.rows[0])).toBe(false);
+    expect(rowHasListing(out.rows[0] ?? { name: "", brand: "", category: "", actives: "", country: "", retailer: "", price: "", currency: "", url: "" })).toBe(false);
   });
 
   it("stops after the row limit", () => {

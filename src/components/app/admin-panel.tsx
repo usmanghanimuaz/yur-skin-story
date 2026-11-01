@@ -30,11 +30,12 @@ export function SupportInbox() {
   const send = async (id: string, close: boolean) => {
     const body = (text[id] ?? "").trim();
     if (body.length < 2) { toast.error("Write a reply first."); return; }
-    const { error } = await reply({ data: { id, reply: body, close } });
-    if (error) { toast.error("The reply could not be saved."); return; }
-    toast.success(close ? "Marked closed." : "Reply saved.");
-    setText((t) => ({ ...t, [id]: "" }));
-    await qc.invalidateQueries();
+    try {
+      await reply({ data: { id, reply: body, close } });
+      toast.success(close ? "Marked closed." : "Reply saved.");
+      setText((t) => ({ ...t, [id]: "" }));
+      await qc.invalidateQueries();
+    } catch { toast.error("The reply could not be saved."); }
   };
   const open = data.filter((m) => m.status === "open").length;
   return <Section title="Support inbox" hint={`Messages people sent from inside the app. ${open} still waiting for a reply.`}>
@@ -102,10 +103,11 @@ export function AccountsPanel() {
   const { data = [], isLoading } = useQuery({ queryKey: ["admin-accounts"], queryFn: () => load() });
   const [reason, setReason] = useState<Record<string, string>>({});
   const toggle = async (id: string, blocked: boolean) => {
-    const { error } = await setBlocked({ data: { userId: id, blocked, reason: reason[id] ?? "" } });
-    if (error) { toast.error("The account state could not be saved."); return; }
-    toast.success(blocked ? "Account paused." : "Account resumed.");
-    await qc.invalidateQueries();
+    try {
+      await setBlocked({ data: { userId: id, blocked, reason: reason[id] ?? "" } });
+      toast.success(blocked ? "Account paused." : "Account resumed.");
+      await qc.invalidateQueries();
+    } catch { toast.error("The account state could not be saved."); }
   };
   return <Section title="Accounts and limits" hint="Who has signed up, how many scans they have used today, and pausing an account that abuses the limit.">
     <div className="flex flex-wrap gap-3 text-xs">
@@ -188,17 +190,18 @@ export function TranslationEditor() {
   const save = useServerFn(adminSetLocaleOverride);
   const remove = useServerFn(adminDeleteLocaleOverride);
   const { data = [] } = useQuery({ queryKey: ["locale-overrides"], queryFn: () => load() });
-  const [locale, setLocale] = useState<string>(LOCALES[0].code);
-  const [key, setKey] = useState<string>(LABEL_KEYS[0]);
+  const [locale, setLocale] = useState<string>(LOCALES[0]?.code ?? "en");
+  const [key, setKey] = useState<string>(LABEL_KEYS[0] ?? "overview");
   const [value, setValue] = useState("");
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!value.trim()) { toast.error("Write the label first."); return; }
-    const { error } = await save({ data: { locale, key, value } });
-    if (error) { toast.error("The label could not be saved."); return; }
-    toast.success("Label saved.");
-    setValue("");
-    await qc.invalidateQueries();
+    try {
+      await save({ data: { locale, key, value } });
+      toast.success("Label saved.");
+      setValue("");
+      await qc.invalidateQueries();
+    } catch { toast.error("The label could not be saved."); }
   };
   const mine = data.filter((r) => r.locale === locale);
   return <Section title="Interface labels" hint="Fix or change any word in the app without a rebuild. Your text wins over the built-in wording.">

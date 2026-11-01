@@ -31,7 +31,7 @@ export const submitSupportMessage = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const problem = supportDraftError(data);
     if (problem) throw new Error(problem);
-    const { data: open } = await context.supabase.from("support_messages").select("id").eq("owner_id", context.userId).in("status", ["open", "replied"]);
+    const { data: open } = await context.supabase.from("support_messages").select("status").eq("owner_id", context.userId).in("status", ["open", "replied"]);
     if (!canStartSupportThread(open ?? [])) throw new Error("You already have 3 messages waiting for a reply. We answer within two working days.");
     const { error } = await context.supabase.from("support_messages").insert({ owner_id: context.userId, subject: data.subject.trim(), body: data.body.trim() });
     if (error) throw new Error("Your message could not be sent. Please try again.");
