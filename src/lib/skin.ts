@@ -1,15 +1,15 @@
 export const METRICS = [
-  { key: "clarity", label: "Clarity", description: "How clear the skin looks, with fewer visible blemishes." },
-  { key: "oil_control", label: "Oil control", description: "How balanced shine looks across the face." },
-  { key: "pores", label: "Pores", description: "How refined visible pores appear." },
-  { key: "texture", label: "Texture", description: "How smooth the skin surface appears." },
-  { key: "fine_lines", label: "Fine lines", description: "How few visible fine lines are detected." },
-  { key: "firmness", label: "Firmness", description: "How firm and lifted the skin appears." },
-  { key: "pigment", label: "Even tone", description: "How even skin tone and spots look." },
-  { key: "redness", label: "Redness", description: "How calm the skin looks, with less visible redness." },
-  { key: "dark_circles", label: "Dark circles", description: "How bright the under-eye area appears." },
-  { key: "hydration", label: "Hydration", description: "How hydrated the skin appears." },
-  { key: "radiance", label: "Radiance", description: "How luminous the complexion appears." },
+  { key: "clarity", label: "Clarity", description: "How clear the skin looks, with fewer visible blemishes.", tip: "Keep pillowcases clean and try not to touch your face during the day." },
+  { key: "oil_control", label: "Oil control", description: "How balanced shine looks across the face.", tip: "Blot gently instead of over-washing — cleansing twice a day is enough." },
+  { key: "pores", label: "Pores", description: "How refined visible pores appear.", tip: "Use lukewarm water and a gentle cleanser, morning and night." },
+  { key: "texture", label: "Texture", description: "How smooth the skin surface appears.", tip: "Moisturise while the skin is still slightly damp after washing." },
+  { key: "fine_lines", label: "Fine lines", description: "How few visible fine lines are detected.", tip: "Apply sunscreen every morning, even on cloudy days." },
+  { key: "firmness", label: "Firmness", description: "How firm and lifted the skin appears.", tip: "Keep a regular sleep schedule and drink enough water." },
+  { key: "pigment", label: "Even tone", description: "How even skin tone and spots look.", tip: "Daily SPF helps keep tone looking even over time." },
+  { key: "redness", label: "Redness", description: "How calm the skin looks, with less visible redness.", tip: "Avoid very hot water and heavily fragranced products on flushed areas." },
+  { key: "dark_circles", label: "Dark circles", description: "How bright the under-eye area appears.", tip: "A regular bedtime and enough water can help the under-eye area." },
+  { key: "hydration", label: "Hydration", description: "How hydrated the skin appears.", tip: "Drink water through the day and moisturise morning and night." },
+  { key: "radiance", label: "Radiance", description: "How luminous the complexion appears.", tip: "Gentle exfoliation once a week can help skin look brighter." },
 ] as const;
 
 export type MetricKey = (typeof METRICS)[number]["key"];
