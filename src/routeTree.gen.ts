@@ -46,6 +46,7 @@ import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCheckInIndexRouteImport } from './routes/_authenticated/check-in.index'
 import { Route as AuthenticatedCheckInIdRouteImport } from './routes/_authenticated/check-in.$id'
 import { Route as ApiPublicJobsProcessPhotoDeletionsRouteImport } from './routes/api/public/jobs/process-photo-deletions'
+import { Route as ApiPublicJobsSendRemindersRouteImport } from './routes/api/public/jobs/send-reminders'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -236,6 +237,12 @@ const ApiPublicJobsProcessPhotoDeletionsRoute =
     path: '/api/public/jobs/process-photo-deletions',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicJobsSendRemindersRoute =
+  ApiPublicJobsSendRemindersRouteImport.update({
+    id: '/api/public/jobs/send-reminders',
+    path: '/api/public/jobs/send-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -274,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in/': typeof AuthenticatedCheckInIndexRoute
   '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
+  '/api/public/jobs/send-reminders': typeof ApiPublicJobsSendRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -312,6 +320,7 @@ export interface FileRoutesByTo {
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in': typeof AuthenticatedCheckInIndexRoute
   '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
+  '/api/public/jobs/send-reminders': typeof ApiPublicJobsSendRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -352,6 +361,7 @@ export interface FileRoutesById {
   '/_authenticated/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/_authenticated/check-in/': typeof AuthenticatedCheckInIndexRoute
   '/api/public/jobs/process-photo-deletions': typeof ApiPublicJobsProcessPhotoDeletionsRoute
+  '/api/public/jobs/send-reminders': typeof ApiPublicJobsSendRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/check-in/$id'
     | '/check-in/'
     | '/api/public/jobs/process-photo-deletions'
+    | '/api/public/jobs/send-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/check-in/$id'
     | '/check-in'
     | '/api/public/jobs/process-photo-deletions'
+    | '/api/public/jobs/send-reminders'
   id:
     | '__root__'
     | '/'
@@ -469,6 +481,7 @@ export interface FileRouteTypes {
     | '/_authenticated/check-in/$id'
     | '/_authenticated/check-in/'
     | '/api/public/jobs/process-photo-deletions'
+    | '/api/public/jobs/send-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -493,6 +506,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   YourDataRoute: typeof YourDataRoute
   ApiPublicJobsProcessPhotoDeletionsRoute: typeof ApiPublicJobsProcessPhotoDeletionsRoute
+  ApiPublicJobsSendRemindersRoute: typeof ApiPublicJobsSendRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -756,6 +770,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicJobsProcessPhotoDeletionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/send-reminders': {
+      id: '/api/public/jobs/send-reminders'
+      path: '/api/public/jobs/send-reminders'
+      fullPath: '/api/public/jobs/send-reminders'
+      preLoaderRoute: typeof ApiPublicJobsSendRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -823,6 +844,7 @@ const rootRouteChildren: RootRouteChildren = {
   YourDataRoute: YourDataRoute,
   ApiPublicJobsProcessPhotoDeletionsRoute:
     ApiPublicJobsProcessPhotoDeletionsRoute,
+  ApiPublicJobsSendRemindersRoute: ApiPublicJobsSendRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

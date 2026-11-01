@@ -43,6 +43,13 @@
       "when": 1793562326830,
       "tag": "0005_admin_queue_and_quota_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793563962774,
+      "tag": "0006_admin_activity_reminders_content",
+      "breakpoints": true
     }
   ]
 }
