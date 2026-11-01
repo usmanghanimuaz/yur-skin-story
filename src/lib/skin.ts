@@ -15,7 +15,7 @@ export const METRICS = [
 export type MetricKey = (typeof METRICS)[number]["key"];
 export type Metrics = Partial<Record<MetricKey, number>>;
 
-/** YouCam SD skin-analysis actions mapped to SkinTwin metrics. Higher score = better. */
+/** YouCam SD skin-analysis actions mapped to Your Skin Story metrics. Higher score = better. */
 export const YOUCAM_ACTIONS: Record<string, MetricKey> = {
   acne: "clarity",
   oiliness: "oil_control",

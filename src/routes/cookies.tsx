@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/app/policy";
 import { pageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/cookies")({ head: () => pageHead("Cookies & local storage", "SkinTwin uses only essential browser storage to keep you signed in and remember preferences."), component: Page });
+export const Route = createFileRoute("/cookies")({ head: () => pageHead("Cookies & local storage", "Your Skin Story uses only essential browser storage to keep you signed in and remember preferences."), component: Page });
 
 function Page() {
   return <PolicyPage eyebrow="COOKIES" title="Cookies & local storage" intro="We use only what is essential. No advertising cookies, no cross-site tracking." sections={[

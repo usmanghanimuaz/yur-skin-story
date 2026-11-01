@@ -30,7 +30,7 @@ function AiInsight({ checkInId, ageBand, sample }: { checkInId: string; ageBand?
     if (!Number.isInteger(n) || n < 13 || n > 100) { setError("Enter an age between 13 and 100."); return; }
     setBusy(true); setError(""); setText("");
     try { const r = await explain({ data: { checkInId, age: n } }); if ("error" in r && r.error) setError(r.error); else if ("text" in r) setText(r.text ?? ""); }
-    catch { setError("Couldn't reach SkinTwin. Check your connection and try again."); }
+    catch { setError("Couldn't reach Your Skin Story. Check your connection and try again."); }
     finally { setBusy(false); }
   };
   return <section className="mt-10 rounded-2xl border bg-card p-6" aria-labelledby="ai-insight"><div className="flex items-center gap-2"><Sparkles className="size-5 text-rose" /><h2 id="ai-insight" className="text-3xl">Understand your latest scan</h2></div><p className="mt-2 text-xs leading-6 text-muted-foreground">Uses your latest check-in scores and your age to explain what they suggest and what to try next. Cosmetic guidance only, not a diagnosis.</p>
@@ -53,7 +53,7 @@ export function Dashboard({ sample = false }: { sample?: boolean }) {
   const checks = sample ? demoChecks : rows;
   if (!sample && (loading || isLoading)) return <div className="py-20 text-center text-muted-foreground">Loading your skin story…</div>;
   if (!sample && acct && !acct.account.onboarded) return <EmptyState title="Let's finish setting up" text={`You're on step ${Math.min(acct.account.onboarding_step + 1, 4)} of 4. Pick up where you left off.`} to="/welcome" action="Continue setup" />;
-  if (!person) return <EmptyState title="Let's meet your skin twin" text="Set up your first person profile to start tracking." to="/welcome" action="Set up my profile" />;
+  if (!person) return <EmptyState title="Let's meet your skin story" text="Set up your first person profile to start tracking." to="/welcome" action="Set up my profile" />;
   const latest = checks[0];
   const previous = checks[1];
   const metrics = (latest?.metrics ?? {}) as Metrics;

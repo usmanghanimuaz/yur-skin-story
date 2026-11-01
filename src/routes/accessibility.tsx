@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/app/policy";
 import { pageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/accessibility")({ head: () => pageHead("Accessibility", "SkinTwin's commitment to an accessible experience for everyone."), component: Page });
+export const Route = createFileRoute("/accessibility")({ head: () => pageHead("Accessibility", "Your Skin Story's commitment to an accessible experience for everyone."), component: Page });
 
 function Page() {
   return <PolicyPage eyebrow="ACCESSIBILITY" title="Built for everyone" intro="We aim to meet WCAG 2.2 AA so everyone can track their skin comfortably." sections={[

@@ -2,4 +2,4 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app/app-shell";
 import { Catalogue } from "@/components/app/catalogue";
 import { pageHead } from "@/lib/seo";
-export const Route = createFileRoute("/_authenticated/catalogue")({ head: () => pageHead("Catalogue", "Explore skincare products by ingredient and country in SkinTwin AI."), component: () => <AppShell><Catalogue /></AppShell> });
+export const Route = createFileRoute("/_authenticated/catalogue")({ head: () => pageHead("Catalogue", "Explore skincare products by ingredient and country in Your Skin Story."), component: () => <AppShell><Catalogue /></AppShell> });

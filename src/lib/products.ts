@@ -30,5 +30,5 @@ export function buildRoutineIcs(morning: string, night: string, now = new Date()
     const [h = "00", m = "00"] = time.split(":");
     return ["BEGIN:VEVENT", `UID:${id}-${d}@skintwin`, `DTSTAMP:${d}T000000Z`, `DTSTART:${d}T${h.padStart(2, "0")}${m.padStart(2, "0")}00`, "RRULE:FREQ=DAILY", `SUMMARY:${title}`, "END:VEVENT"].join("\r\n");
   };
-  return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//SkinTwin AI//Routine//EN", ev("am", morning, "SkinTwin morning routine"), ev("pm", night, "SkinTwin night routine"), "END:VCALENDAR"].join("\r\n");
+  return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Your Skin Story//Routine//EN", ev("am", morning, "Your Skin Story morning routine"), ev("pm", night, "Your Skin Story night routine"), "END:VCALENDAR"].join("\r\n");
 }

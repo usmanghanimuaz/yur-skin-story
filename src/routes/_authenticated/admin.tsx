@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { AdminPanel } from "@/components/app/catalogue";
 import { AdminSections } from "@/components/app/admin-panel";
 import { EmptyState } from "@/components/app/dashboard";
-import { myRole } from "@/lib/skintwin.functions";
+import { myRole } from "@/lib/skin-story.functions";
 import { pageHead } from "@/lib/seo";
 
 function AdminGate() {
@@ -16,4 +16,4 @@ function AdminGate() {
     ? <><AdminPanel /><div className="mt-16 border-t pt-12"><AdminSections /></div></>
     : <EmptyState title="Admins only" text="This area is for catalogue and evidence maintenance." />;
 }
-export const Route = createFileRoute("/_authenticated/admin")({ head: () => pageHead("Admin", "SkinTwin AI catalogue and evidence maintenance."), component: () => <AppShell><AdminGate /></AppShell> });
+export const Route = createFileRoute("/_authenticated/admin")({ head: () => pageHead("Admin", "Your Skin Story catalogue and evidence maintenance."), component: () => <AppShell><AdminGate /></AppShell> });

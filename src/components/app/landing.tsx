@@ -8,7 +8,7 @@ import { ScoreRing, Delta } from "./score";
 import { METRICS } from "@/lib/skin";
 import { ResultsShowcase } from "./results-showcase";
 import { useContent } from "@/lib/content";
-import hero from "@/assets/skintwin-portrait.jpg";
+import hero from "@/assets/skin-story-portrait.jpg";
 
 export function Landing() {
   const { c } = useContent();
