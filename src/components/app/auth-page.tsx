@@ -9,6 +9,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { logActivity } from "@/lib/data";
 
+export function googleMessage(raw?: string | null): string {
+  const m = (raw ?? "").toLowerCase();
+  if (m.includes("access_denied") || m.includes("denied") || m.includes("cancel")) return "Google sign-in was cancelled. Choose an account and allow access to continue.";
+  if (m.includes("popup") || m.includes("closed")) return "The Google window was closed or blocked before sign-in finished. Allow pop-ups for this site and try again.";
+  if (m.includes("network") || m.includes("fetch")) return "We couldn't reach Google. Check your internet connection and try again.";
+  return "Google sign-in didn't work this time. Please try again, or use your email and password instead.";
+}
+
 export type AuthMode = "login" | "register" | "forgot" | "reset";
 export function AuthPage({ mode }: { mode: AuthMode }) {
   const [email, setEmail] = useState("");
@@ -17,6 +25,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [googleError, setGoogleError] = useState("");
   const [message, setMessage] = useState("");
   const [recovery, setRecovery] = useState(false);
   const navigate = useNavigate();
@@ -36,12 +45,24 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     let done = false;
     const go = async () => {
       if (done) return; done = true;
+      sessionStorage.removeItem("skintwin-google-pending");
       const target = destination(); sessionStorage.removeItem("skintwin-return");
       if (sessionStorage.getItem("skintwin-signin-logged") !== "yes") { await logActivity("sign_in", "Signed in"); sessionStorage.setItem("skintwin-signin-logged", "yes"); }
       await navigate({ to: target });
     };
+    // Provider errors come back in the URL query or hash.
+    const params = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
+    const urlError = params.get("error_description") ?? params.get("error");
+    if (urlError) { sessionStorage.removeItem("skintwin-google-pending"); setGoogleError(googleMessage(urlError)); }
     // Returning from Google: the session lands after redirect, so send signed-in users onward.
-    supabase.auth.getUser().then(({ data }) => { if (data.user) void go(); });
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) { void go(); return; }
+      const pending = Number(sessionStorage.getItem("skintwin-google-pending") ?? 0);
+      if (pending && !urlError) {
+        // Give a late session a moment to arrive before telling the user it failed.
+        setTimeout(() => { if (done) return; sessionStorage.removeItem("skintwin-google-pending"); if (Date.now() - pending < 10 * 60000) setGoogleError("Google sign-in didn't finish, so you're back here. This can happen if the Google window was closed or your browser blocked cookies or pop-ups."); }, 2500);
+      }
+    });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => { if (event === "SIGNED_IN" && session) void go(); });
     return () => sub.subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,11 +95,17 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     finally { setBusy(false); }
   };
   const google = async () => {
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setGoogleError("");
     sessionStorage.setItem("skintwin-return", destination());
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth`, extraParams: { prompt: "select_account" } });
-    if (result.error) { setError(result.error.message ?? "Google sign-in could not start."); setBusy(false); return; }
-    if (!result.redirected) await finishSignIn();
+    sessionStorage.setItem("skintwin-google-pending", String(Date.now()));
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth`, extraParams: { prompt: "select_account" } });
+      if (result.error) { sessionStorage.removeItem("skintwin-google-pending"); setGoogleError(googleMessage(result.error.message)); setBusy(false); return; }
+      if (!result.redirected) { sessionStorage.removeItem("skintwin-google-pending"); await finishSignIn(); }
+    } catch (err) {
+      sessionStorage.removeItem("skintwin-google-pending");
+      setGoogleError(googleMessage(err instanceof Error ? err.message : undefined)); setBusy(false);
+    }
   };
   const headings = { login: ["Welcome back.", "Your skin story is right where you left it."], register: ["Meet your skin twin.", "A little insight is the start of a little progress."], forgot: ["Let's get you back in.", "We'll send a secure link to reset your password."], reset: ["A fresh start.", "Choose a new password for your account."] };
   return <div className="flex min-h-screen flex-col"><header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-7 sm:px-8"><Brand /><Link to="/guide" className="text-sm text-muted-foreground">SkinTwin guide <ArrowUpRight className="ml-1 inline size-3" /></Link></header><main className="mx-auto w-full max-w-md flex-1 px-5 py-10"><Link to="/" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground"><ArrowLeft className="size-3" /> Back to home</Link><h1 className="text-5xl">{headings[mode][0]}</h1><p className="mt-4 text-sm leading-6 text-muted-foreground">{headings[mode][1]}</p>
@@ -90,7 +117,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
       {mode === "register" && <label className="flex items-start gap-2 text-xs leading-6 text-muted-foreground"><input type="checkbox" required className="mt-1.5" /><span>I agree to the <Link to="/terms" className="underline">Terms</Link> and <Link to="/privacy" className="underline">Privacy Policy</Link>. This is cosmetic tracking, not medical advice.</span></label>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={busy || mode === "reset" && !recovery} className="h-12 w-full rounded-full">{busy ? <Loader2 className="animate-spin" /> : <>{mode === "login" ? "Log in" : mode === "register" ? "Create my account" : mode === "forgot" ? "Send reset link" : "Save new password"}<ArrowUpRight /></>}</Button>
-      {(mode === "login" || mode === "register") && <><div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" /></div><Button type="button" variant="outline" className="h-12 w-full rounded-full bg-card" disabled={busy} onClick={google}><span className="text-base font-semibold">G</span> Continue with Google</Button><p className="text-center text-xs text-muted-foreground">{mode === "login" ? "New to SkinTwin?" : "Already have an account?"} <Link to={mode === "login" ? "/register" : "/login"} className="font-medium text-primary underline">{mode === "login" ? "Start your journey" : "Log in"}</Link></p></>}
+      {googleError && (mode === "login" || mode === "register") && <div role="alert" className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4"><p className="text-sm font-medium text-destructive">Google sign-in didn't complete</p><p className="mt-1 text-xs leading-6 text-muted-foreground">{googleError}</p><div className="mt-3 flex flex-wrap gap-2"><Button type="button" size="sm" className="rounded-full" disabled={busy} onClick={google}>Try Google again</Button><Button type="button" size="sm" variant="ghost" className="rounded-full" onClick={() => { setGoogleError(""); document.getElementById("email")?.focus(); }}>Use email instead</Button></div></div>}{(mode === "login" || mode === "register") && <><div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" /></div><Button type="button" variant="outline" className="h-12 w-full rounded-full bg-card" disabled={busy} onClick={google}><span className="text-base font-semibold">G</span> Continue with Google</Button><p className="text-center text-xs text-muted-foreground">{mode === "login" ? "New to SkinTwin?" : "Already have an account?"} <Link to={mode === "login" ? "/register" : "/login"} className="font-medium text-primary underline">{mode === "login" ? "Start your journey" : "Log in"}</Link></p></>}
     </form>}
     <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4" /> Private by design. Always.</div></main><footer className="mx-auto max-w-xl px-5 py-8 text-center"><Disclaimer /></footer></div>;
 }
