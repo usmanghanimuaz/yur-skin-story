@@ -62,6 +62,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_activity_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string
+          created_at: string
+          detail: string | null
+          id: string
+          target: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          target?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          target?: string | null
+        }
+        Relationships: []
+      }
       advice_feedback: {
         Row: {
           check_in_id: string
@@ -203,6 +233,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      content_overrides: {
+        Row: {
+          locale: string
+          page_key: string
+          text_key: string
+          text_value: string
+          updated_at: string
+        }
+        Insert: {
+          locale: string
+          page_key: string
+          text_key: string
+          text_value: string
+          updated_at?: string
+        }
+        Update: {
+          locale?: string
+          page_key?: string
+          text_key?: string
+          text_value?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       evidence_entries: {
         Row: {
@@ -466,6 +520,30 @@ export type Database = {
           updated_at?: string
           user_id?: string
           weekly_reminder?: boolean
+        }
+        Relationships: []
+      }
+      reminder_deliveries: {
+        Row: {
+          bucket: string
+          id: string
+          kind: string
+          owner_id: string
+          sent_at: string
+        }
+        Insert: {
+          bucket: string
+          id?: string
+          kind: string
+          owner_id: string
+          sent_at?: string
+        }
+        Update: {
+          bucket?: string
+          id?: string
+          kind?: string
+          owner_id?: string
+          sent_at?: string
         }
         Relationships: []
       }
