@@ -1,4 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { explainScan } from "@/lib/ai-insight.functions";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, CalendarDays, Camera, Download, Droplets, Sparkles, TrendingUp, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +17,29 @@ import { ScoreRing, MetricGrid, Delta, CheckInPhoto } from "./score";
 import { downloadPdf } from "@/lib/downloads";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+
+const BAND_AGE: Record<string, number> = { "under-18": 16, "18-24": 21, "25-34": 30, "35-44": 40, "45-54": 50, "55+": 60 };
+function AiInsight({ checkInId, ageBand, sample }: { checkInId: string; ageBand?: string | null; sample: boolean }) {
+  const [age, setAge] = useState(String(BAND_AGE[ageBand ?? ""] ?? ""));
+  const [busy, setBusy] = useState(false);
+  const [text, setText] = useState("");
+  const [error, setError] = useState("");
+  const explain = useServerFn(explainScan);
+  const run = async () => {
+    const n = Number(age);
+    if (!Number.isInteger(n) || n < 13 || n > 100) { setError("Enter an age between 13 and 100."); return; }
+    setBusy(true); setError(""); setText("");
+    try { const r = await explain({ data: { checkInId, age: n } }); if ("error" in r && r.error) setError(r.error); else if ("text" in r) setText(r.text ?? ""); }
+    catch { setError("Couldn't reach SkinTwin. Check your connection and try again."); }
+    finally { setBusy(false); }
+  };
+  return <section className="mt-10 rounded-2xl border bg-card p-6" aria-labelledby="ai-insight"><div className="flex items-center gap-2"><Sparkles className="size-5 text-rose" /><h2 id="ai-insight" className="text-3xl">Understand your latest scan</h2></div><p className="mt-2 text-xs leading-6 text-muted-foreground">Uses your latest check-in scores and your age to explain what they suggest and what to try next. Cosmetic guidance only, not a diagnosis.</p>
+    {sample ? <p className="mt-4 text-sm text-muted-foreground">Sign in and complete a real check-in to get a personal AI insight.</p> : <div className="mt-4 flex flex-wrap items-end gap-3"><div className="space-y-1"><Label htmlFor="ai-age">Your age</Label><Input id="ai-age" type="number" inputMode="numeric" min={13} max={100} value={age} onChange={(e) => setAge(e.target.value)} className="h-11 w-28 rounded-xl" /></div><Button className="h-11 rounded-full" onClick={run} disabled={busy}>{busy ? <><Loader2 className="animate-spin" /> Thinking…</> : text ? "Refresh insight" : "Explain my scan"}</Button></div>}
+    {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
+    {text && <div className="mt-5 whitespace-pre-line rounded-xl bg-secondary/60 p-5 text-sm leading-7" aria-live="polite">{text}</div>}
+    {text && <p className="mt-3 text-xs text-muted-foreground">AI-generated. Patch test new products and ask a professional about persistent concerns.</p>}
+  </section>;
+}
 
 export function EmptyState({ title = "Your skin story starts here", text = "Your first check-in gives you a starting point. A close-up photo is all you need.", to = "/check-in", action = "Take your first photo" }: { title?: string; text?: string; to?: "/check-in" | "/welcome" | "/manage-profiles"; action?: string }) {
   return <div className="flex flex-col items-center py-20 text-center"><div className="mb-5 grid size-16 place-items-center rounded-full bg-secondary"><Camera className="size-7 text-primary" /></div><h2 className="text-4xl">{title}</h2><p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{text}</p><Button asChild className="mt-7 rounded-full"><Link to={to}>{action}<ArrowUpRight /></Link></Button></div>;
