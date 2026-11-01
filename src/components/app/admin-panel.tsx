@@ -35,7 +35,7 @@ export function SupportInbox() {
       toast.success(close ? "Marked closed." : "Reply saved.");
       setText((t) => ({ ...t, [id]: "" }));
       await qc.invalidateQueries();
-    } catch { toast.error("The reply could not be saved."); }
+    } catch (e) { toast.error(e instanceof Error ? e.message : "The reply could not be saved."); }
   };
   const open = data.filter((m) => m.status === "open").length;
   return <Section title="Support inbox" hint={`Messages people sent from inside the app. ${open} still waiting for a reply.`}>
@@ -107,7 +107,7 @@ export function AccountsPanel() {
       await setBlocked({ data: { userId: id, blocked, reason: reason[id] ?? "" } });
       toast.success(blocked ? "Account paused." : "Account resumed.");
       await qc.invalidateQueries();
-    } catch { toast.error("The account state could not be saved."); }
+    } catch (e) { toast.error(e instanceof Error ? e.message : "The account state could not be saved."); }
   };
   return <Section title="Accounts and limits" hint="Who has signed up, how many scans they have used today, and pausing an account that abuses the limit.">
     <div className="flex flex-wrap gap-3 text-xs">
@@ -201,7 +201,7 @@ export function TranslationEditor() {
       toast.success("Label saved.");
       setValue("");
       await qc.invalidateQueries();
-    } catch { toast.error("The label could not be saved."); }
+    } catch (e) { toast.error(e instanceof Error ? e.message : "The label could not be saved."); }
   };
   const mine = data.filter((r) => r.locale === locale);
   return <Section title="Interface labels" hint="Fix or change any word in the app without a rebuild. Your text wins over the built-in wording.">
