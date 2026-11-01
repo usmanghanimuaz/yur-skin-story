@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicShell } from "@/components/app/public-shell";
 import { pageHead } from "@/lib/seo";
 import { SUPPORT_EMAIL, SUPPORT_MAILTO } from "@/lib/site";
