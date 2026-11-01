@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { canStartSupportThread, supportDraftError } from "./support";
 import { parseCatalogueCsv, rowHasListing } from "./import-csv";
-import { CONTENT_DEFAULTS } from "./content";
+import { CONTENT_DEFAULTS } from "./content-defaults";
 import { reminderOptIns, weeklyDue } from "./reminders";
 import { countPerDay, percent, recentDays } from "./overview";
 import type { Database } from "@/integrations/supabase/types";

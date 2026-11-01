@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "./dashboard";
 import { LOCALES, LABEL_KEYS } from "@/lib/i18n";
-import { CONTENT_DEFAULTS, CONTENT_PAGES } from "@/lib/content";
+import { CONTENT_DEFAULTS, CONTENT_PAGES } from "@/lib/content-defaults";
 import { contentCoverage, toContentMap } from "@/lib/content-overrides";
 import {
   adminAccounts, adminActivityLog, adminBulkImport, adminDeletionQueue, adminDeleteContentOverride, adminDeleteLocaleOverride,
