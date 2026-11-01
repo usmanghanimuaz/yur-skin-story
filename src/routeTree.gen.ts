@@ -41,6 +41,7 @@ import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSecurityLogRouteImport } from './routes/_authenticated/security-log'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSupportDeskRouteImport } from './routes/_authenticated/support-desk'
 import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
 import { Route as AuthenticatedCheckInIndexRouteImport } from './routes/_authenticated/check-in.index'
 import { Route as AuthenticatedCheckInIdRouteImport } from './routes/_authenticated/check-in.$id'
@@ -207,6 +208,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSupportDeskRoute =
+  AuthenticatedSupportDeskRouteImport.update({
+    id: '/support-desk',
+    path: '/support-desk',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedWelcomeRoute = AuthenticatedWelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -262,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/security-log': typeof AuthenticatedSecurityLogRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/support-desk': typeof AuthenticatedSupportDeskRoute
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in/': typeof AuthenticatedCheckInIndexRoute
@@ -299,6 +307,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/security-log': typeof AuthenticatedSecurityLogRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/support-desk': typeof AuthenticatedSupportDeskRoute
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/check-in': typeof AuthenticatedCheckInIndexRoute
@@ -338,6 +347,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/security-log': typeof AuthenticatedSecurityLogRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/support-desk': typeof AuthenticatedSupportDeskRoute
   '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
   '/_authenticated/check-in/$id': typeof AuthenticatedCheckInIdRoute
   '/_authenticated/check-in/': typeof AuthenticatedCheckInIndexRoute
@@ -377,6 +387,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/security-log'
     | '/settings'
+    | '/support-desk'
     | '/welcome'
     | '/check-in/$id'
     | '/check-in/'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/security-log'
     | '/settings'
+    | '/support-desk'
     | '/welcome'
     | '/check-in/$id'
     | '/check-in'
@@ -452,6 +464,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/security-log'
     | '/_authenticated/settings'
+    | '/_authenticated/support-desk'
     | '/_authenticated/welcome'
     | '/_authenticated/check-in/$id'
     | '/_authenticated/check-in/'
@@ -708,6 +721,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/support-desk': {
+      id: '/_authenticated/support-desk'
+      path: '/support-desk'
+      fullPath: '/support-desk'
+      preLoaderRoute: typeof AuthenticatedSupportDeskRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/welcome': {
       id: '/_authenticated/welcome'
       path: '/welcome'
@@ -752,6 +772,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSecurityLogRoute: typeof AuthenticatedSecurityLogRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSupportDeskRoute: typeof AuthenticatedSupportDeskRoute
   AuthenticatedWelcomeRoute: typeof AuthenticatedWelcomeRoute
   AuthenticatedCheckInIdRoute: typeof AuthenticatedCheckInIdRoute
   AuthenticatedCheckInIndexRoute: typeof AuthenticatedCheckInIndexRoute
@@ -770,6 +791,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSecurityLogRoute: AuthenticatedSecurityLogRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSupportDeskRoute: AuthenticatedSupportDeskRoute,
   AuthenticatedWelcomeRoute: AuthenticatedWelcomeRoute,
   AuthenticatedCheckInIdRoute: AuthenticatedCheckInIdRoute,
   AuthenticatedCheckInIndexRoute: AuthenticatedCheckInIndexRoute,

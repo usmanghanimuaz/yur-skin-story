@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { LayoutDashboard, History, GitCompareArrows, FlaskConical, Users, Settings, Download, ShieldCheck, LogOut, Plus, ChevronDown, BookOpen, Wrench, Languages } from "lucide-react";
+import { LayoutDashboard, History, GitCompareArrows, FlaskConical, Users, Settings, Download, ShieldCheck, LogOut, Plus, ChevronDown, BookOpen, Wrench, Languages, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Brand } from "./brand";
@@ -47,6 +47,7 @@ function ShellBody({ children, sample }: { children: ReactNode; sample?: boolean
       <DropdownMenuItem asChild><Link to="/settings"><Settings className="size-4" /> {t("settings")}</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link to="/export-data"><Download className="size-4" /> {t("export")}</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link to="/security-log"><ShieldCheck className="size-4" /> {t("securityLog")}</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link to="/support-desk"><LifeBuoy className="size-4" /> Message us</Link></DropdownMenuItem>
       {role?.admin && <DropdownMenuItem asChild><Link to="/admin"><Wrench className="size-4" /> {t("admin")}</Link></DropdownMenuItem>}
       <DropdownMenuItem onClick={signOut}><LogOut className="size-4" /> {t("signOut")}</DropdownMenuItem>
     </DropdownMenuContent></DropdownMenu><Button asChild className="rounded-full"><Link to="/check-in"><Plus /><span className="hidden sm:inline">{t("newCheckin")}</span></Link></Button></>}</div></div></header>
