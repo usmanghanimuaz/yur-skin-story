@@ -412,7 +412,7 @@ export const adminOverview = createServerFn({ method: "GET" })
         today: (quota ?? []).filter((q) => q.window_key === today).reduce((sum, q) => sum + (q.count ?? 0), 0),
         perDay: countPerDay(checkIns ?? [], days),
         days,
-        byEngine: [...engines.entries()].map([null, "engine", "count"] as never as (value: [string, number], index: number) => { engine: string; count: number }),
+        byEngine: [...engines.entries()].map(([engine, count]) => ({ engine, count })),
       },
       photos: {
         stored: (checkIns ?? []).filter((c) => c.photo_path).length,
