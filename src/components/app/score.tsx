@@ -53,8 +53,8 @@ export function ScoreChart({ points }: { points: { date: string; score: number }
     <div className="rounded-2xl border bg-card p-5">
       <p className="text-xs text-muted-foreground">Score history</p>
       <svg viewBox={`0 0 ${w} ${h}`} className="mt-3 w-full" role="img" aria-label="Overall score history chart">
-        <polyline points={xs.map((x, i) => `${x},${ys[i]}`).join(" ")} fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinejoin="round" />
-        {sorted.map((p, i) => <circle key={`${p.date}-${i}`} cx={xs[i]} cy={ys[i]} r="4" fill="var(--primary)" />)}
+        <polyline points={xs.map((x, i) => `${x},${ys[i] ?? 0}`).join(" ")} fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinejoin="round" />
+        {sorted.map((p, i) => <circle key={`${p.date}-${i}`} cx={xs[i] ?? 0} cy={ys[i] ?? 0} r="4" fill="var(--primary)" />)}
       </svg>
       <div className="mt-2 flex justify-between text-xs text-muted-foreground">
         <span>{new Date(sorted[0].date).toLocaleDateString("en-GB")}</span>
