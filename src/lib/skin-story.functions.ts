@@ -8,9 +8,17 @@ import type { Json } from "@/integrations/supabase/types";
 const API = "https://yce-api-01.makeupar.com/s2s/v2.0";
 const uuid = z.string().uuid();
 
+/** Primary key first, backup key second — the backup is used when the first is rejected or out of credits. */
+function youcamKeys(): string[] {
+  return [process.env["YOUCAM_API_KEY"], process.env["YOUCAM_API_KEY_2"]].filter((k): k is string => Boolean(k));
+}
+
 export const analysisStatus = createServerFn({ method: "GET" }).handler(async () => ({
-  configured: Boolean(process.env["YOUCAM_API_KEY"]),
+  configured: youcamKeys().length > 0,
 }));
+
+class YoucamError extends Error { constructor(msg: string, public status: number) { super(msg); } }
+const SWITCH_KEY = new Set([401, 402, 403, 429]);
 
 async function youcam(path: string, key: string, body?: unknown) {
   const res = await fetch(`${API}${path}`, {
@@ -18,8 +26,8 @@ async function youcam(path: string, key: string, body?: unknown) {
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : null,
   });
-  const out = await res.json() as { data?: Record<string, unknown>; error?: string; status?: number };
-  if (!res.ok) throw new Error(res.status === 401 ? "YouCam credentials were rejected. Please contact the app owner." : "YouCam could not process this photo. Try a clear close-up in daylight.");
+  const out = await res.json().catch(() => ({})) as { data?: Record<string, unknown>; error?: string; status?: number };
+  if (!res.ok) throw new YoucamError(res.status === 401 ? "YouCam credentials were rejected. Please contact the app owner." : SWITCH_KEY.has(res.status) ? "YouCam scan credits are used up. Please try again later." : "YouCam could not process this photo. Try a clear close-up in daylight.", res.status);
   return out;
 }
 
