@@ -57,6 +57,13 @@
       "when": 1793565115028,
       "tag": "0007_share_scans_opt_in",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793616382854,
+      "tag": "0008_scope_public_read_policies",
+      "breakpoints": true
     }
   ]
 }
