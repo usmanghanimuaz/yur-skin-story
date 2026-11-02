@@ -35,8 +35,8 @@ export const startAnalysis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => z.object({ profileId: uuid, photoPath: z.string().min(1).max(300), notes: z.string().max(1000).default("") }).parse(input))
   .handler(async ({ data, context }) => {
-    const key = process.env["YOUCAM_API_KEY"];
-    if (!key) throw new Error("Live analysis is not connected yet. Sample mode never saves a real scan.");
+    const keys = youcamKeys();
+    if (!keys.length) throw new Error("Live analysis is not connected yet. Sample mode never saves a real scan.");
     const { data: person } = await context.supabase.from("person_profiles").select("id").eq("id", data.profileId).eq("user_id", context.userId).single();
     if (!person || !data.photoPath.startsWith(`${context.userId}/`) || data.photoPath.includes("..")) throw new Error("Photo or profile not found.");
     const { data: file, error: fileError } = await context.supabase.storage.from("checkin-photos").download(data.photoPath);
@@ -54,7 +54,18 @@ export const startAnalysis = createServerFn({ method: "POST" })
       throw new Error("This photo has already been submitted. Choose a new photo.");
     }
     try {
-      const registered = await youcam("/file", key, { files: [{ content_type: file.type, file_name: "skintwin-photo", file_size: file.size }] });
+      let registered: Awaited<ReturnType<typeof youcam>> | null = null;
+      let key = "";
+      for (const [i, k] of keys.entries()) {
+        try {
+          registered = await youcam("/file", k, { files: [{ content_type: file.type, file_name: "skintwin-photo", file_size: file.size }] });
+          key = k;
+          break;
+        } catch (e) {
+          if (!(e instanceof YoucamError && SWITCH_KEY.has(e.status)) || i === keys.length - 1) throw e;
+        }
+      }
+      if (!registered) throw new Error("YouCam upload could not be initialized.");
       const files = registered.data?.["files"] as { file_id: string; requests: { url: string; method: string; headers: Record<string, string> }[] }[] | undefined;
       const first = files?.[0];
       const request = first?.requests?.[0];
@@ -87,9 +98,15 @@ export const pollAnalysis = createServerFn({ method: "POST" })
     if (!upload) throw new Error("Analysis not found.");
     if (upload.check_in_id) return { status: "success", checkInId: upload.check_in_id };
     if (upload.status === "rejected") throw new Error("This photo was rejected. Please try a clear face close-up.");
-    const key = process.env["YOUCAM_API_KEY"];
-    if (!key || !upload.task_id || !upload.profile_id) throw new Error("Analysis is not available.");
-    const result = await youcam(`/task/skin-analysis/${encodeURIComponent(upload.task_id)}`, key);
+    const keys = youcamKeys();
+    if (!keys.length || !upload.task_id || !upload.profile_id) throw new Error("Analysis is not available.");
+    // The task belongs to whichever account started it, so try each key until one recognises it.
+    let result: Awaited<ReturnType<typeof youcam>> | null = null;
+    let lastErr: unknown = null;
+    for (const k of keys) {
+      try { result = await youcam(`/task/skin-analysis/${encodeURIComponent(upload.task_id)}`, k); break; } catch (e) { lastErr = e; }
+    }
+    if (!result) throw lastErr ?? new Error("Analysis is not available.");
     const status = result.data?.["task_status"];
     if (status !== "success" && status !== "error") return { status: "running", checkInId: null };
     if (status === "error") {
