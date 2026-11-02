@@ -24,7 +24,7 @@ export function pickSharedScans(rows: SharedRow[], people: SharedPerson[], opted
     const person = self.get(r.profile_id);
     if (!person || person.user_id !== r.owner_id) continue;
     seen.add(r.owner_id);
-    out.push({ ...r, name: person.name.trim() || "Your Skin Story member" });
+    out.push({ ...r, name: person.name.trim() || "Skin Twin AI member" });
     if (limit && out.length >= limit) break;
   }
   return out;

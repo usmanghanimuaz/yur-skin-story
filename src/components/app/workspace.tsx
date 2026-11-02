@@ -18,7 +18,7 @@ import { Disclaimer } from './brand';
 import { EmptyState } from './dashboard';
 import { toast } from 'sonner';
 
-const titles: Record<string,string> = { welcome:'Meet your skin story.', people:'The people you care about.', profile:'Your skin profile.', history:'Your skin, week by week.', compare:'Little changes, side by side.', products:'A routine that feels like you.', settings:'Your account, your preferences.', 'export-data':'Your skin story, to keep.', 'security-log':'Your account activity.', 'check-in':'A moment for your skin.' };
+const titles: Record<string,string> = { welcome:'Meet your skin twin.', people:'The people you care about.', profile:'Your skin profile.', history:'Your skin, week by week.', compare:'Little changes, side by side.', products:'A routine that feels like you.', settings:'Your account, your preferences.', 'export-data':'Your skin twin, to keep.', 'security-log':'Your account activity.', 'check-in':'A moment for your skin.' };
 export function Workspace({ view, id }: { view:string; id?:string }) {
  const { active, people, setActiveId }=useActivePerson();
  const qc=useQueryClient(); const navigate=useNavigate();

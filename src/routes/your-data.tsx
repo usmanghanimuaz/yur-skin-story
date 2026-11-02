@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/app/policy";
 import { pageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/your-data")({ head: () => pageHead("Your data rights", "Access, export, correct and erase your Your Skin Story data at any time."), component: Page });
+export const Route = createFileRoute("/your-data")({ head: () => pageHead("Your data rights", "Access, export, correct and erase your Skin Twin AI data at any time."), component: Page });
 
 function Page() {
   return <PolicyPage eyebrow="YOUR RIGHTS" title="Your data, your control" intro="You can see, take and erase everything we hold about you — directly in the app, no request form needed." sections={[

@@ -30,7 +30,7 @@ function AiInsight({ checkInId, ageBand, sample }: { checkInId: string; ageBand?
     if (!Number.isInteger(n) || n < 13 || n > 100) { setError("Enter an age between 13 and 100."); return; }
     setBusy(true); setError(""); setText("");
     try { const r = await explain({ data: { checkInId, age: n } }); if ("error" in r && r.error) setError(r.error); else if ("text" in r) setText(r.text ?? ""); }
-    catch { setError("Couldn't reach Your Skin Story. Check your connection and try again."); }
+    catch { setError("Couldn't reach Skin Twin AI. Check your connection and try again."); }
     finally { setBusy(false); }
   };
   return <section className="mt-10 rounded-2xl border bg-card p-6" aria-labelledby="ai-insight"><div className="flex items-center gap-2"><Sparkles className="size-5 text-rose" /><h2 id="ai-insight" className="text-3xl">Understand your latest scan</h2></div><p className="mt-2 text-xs leading-6 text-muted-foreground">Uses your latest check-in scores and your age to explain what they suggest and what to try next. Cosmetic guidance only, not a diagnosis.</p>
@@ -41,7 +41,7 @@ function AiInsight({ checkInId, ageBand, sample }: { checkInId: string; ageBand?
   </section>;
 }
 
-export function EmptyState({ title = "Your skin story starts here", text = "Your first check-in gives you a starting point. A close-up photo is all you need.", to = "/check-in", action = "Take your first photo" }: { title?: string; text?: string; to?: "/check-in" | "/welcome" | "/manage-profiles"; action?: string }) {
+export function EmptyState({ title = "Your skin twin starts here", text = "Your first check-in gives you a starting point. A close-up photo is all you need.", to = "/check-in", action = "Take your first photo" }: { title?: string; text?: string; to?: "/check-in" | "/welcome" | "/manage-profiles"; action?: string }) {
   return <div className="flex flex-col items-center py-20 text-center"><div className="mb-5 grid size-16 place-items-center rounded-full bg-secondary"><Camera className="size-7 text-primary" /></div><h2 className="text-4xl">{title}</h2><p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{text}</p><Button asChild className="mt-7 rounded-full"><Link to={to}>{action}<ArrowUpRight /></Link></Button></div>;
 }
 
@@ -51,9 +51,9 @@ export function Dashboard({ sample = false }: { sample?: boolean }) {
   const { data: acct } = useQuery({ ...accountOptions, enabled: !sample });
   const person = sample ? demoPerson : active;
   const checks = sample ? demoChecks : rows;
-  if (!sample && (loading || isLoading)) return <div className="py-20 text-center text-muted-foreground">Loading your skin story…</div>;
+  if (!sample && (loading || isLoading)) return <div className="py-20 text-center text-muted-foreground">Loading your skin twin…</div>;
   if (!sample && acct && !acct.account.onboarded) return <EmptyState title="Let's finish setting up" text={`You're on step ${Math.min(acct.account.onboarding_step + 1, 4)} of 4. Pick up where you left off.`} to="/welcome" action="Continue setup" />;
-  if (!person) return <EmptyState title="Let's meet your skin story" text="Set up your first person profile to start tracking." to="/welcome" action="Set up my profile" />;
+  if (!person) return <EmptyState title="Let's meet your skin twin" text="Set up your first person profile to start tracking." to="/welcome" action="Set up my profile" />;
   const latest = checks[0];
   const previous = checks[1];
   const metrics = (latest?.metrics ?? {}) as Metrics;
