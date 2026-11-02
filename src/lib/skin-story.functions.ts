@@ -4,6 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { normalizeYoucamScores, quotaWindows } from "./skin";
 import { buildAdvice, safetyHash } from "./advice";
 import type { Json } from "@/integrations/supabase/types";
+import { SWITCH_KEY, YoucamError, withKeyFallback } from "./youcam-keys";
 
 const API = "https://yce-api-01.makeupar.com/s2s/v2.0";
 const uuid = z.string().uuid();
@@ -17,8 +18,6 @@ export const analysisStatus = createServerFn({ method: "GET" }).handler(async ()
   configured: youcamKeys().length > 0,
 }));
 
-class YoucamError extends Error { constructor(msg: string, public status: number) { super(msg); } }
-const SWITCH_KEY = new Set([401, 402, 403, 429]);
 
 async function youcam(path: string, key: string, body?: unknown) {
   const res = await fetch(`${API}${path}`, {
@@ -54,18 +53,7 @@ export const startAnalysis = createServerFn({ method: "POST" })
       throw new Error("This photo has already been submitted. Choose a new photo.");
     }
     try {
-      let registered: Awaited<ReturnType<typeof youcam>> | null = null;
-      let key = "";
-      for (const [i, k] of keys.entries()) {
-        try {
-          registered = await youcam("/file", k, { files: [{ content_type: file.type, file_name: "skintwin-photo", file_size: file.size }] });
-          key = k;
-          break;
-        } catch (e) {
-          if (!(e instanceof YoucamError && SWITCH_KEY.has(e.status)) || i === keys.length - 1) throw e;
-        }
-      }
-      if (!registered) throw new Error("YouCam upload could not be initialized.");
+      const { key, value: registered } = await withKeyFallback(keys, (k) => youcam("/file", k, { files: [{ content_type: file.type, file_name: "skintwin-photo", file_size: file.size }] }));
       const files = registered.data?.["files"] as { file_id: string; requests: { url: string; method: string; headers: Record<string, string> }[] }[] | undefined;
       const first = files?.[0];
       const request = first?.requests?.[0];
