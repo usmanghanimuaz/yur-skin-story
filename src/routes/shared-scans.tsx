@@ -5,7 +5,7 @@ import { SharedScanCard, sharedScansOptions } from "@/components/app/shared-scan
 import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/shared-scans")({
-  head: () => pageHead("Shared skin scans", "See the latest skin check-ins that Your Skin Story members chose to share publicly."),
+  head: () => pageHead("Shared skin scans", "See the latest skin check-ins that Skin Twin AI members chose to share publicly."),
   component: SharedScansPage,
 });
 

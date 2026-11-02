@@ -9,7 +9,7 @@ import { useContent } from "@/lib/content";
 import photo from "@/assets/how-photo.jpg";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => pageHead("How Your Skin Story works", "From one close-up photo to a private, week-by-week picture of your skin: capture, analyse, track, compare and care."),
+  head: () => pageHead("How Skin Twin AI works", "From one close-up photo to a private, week-by-week picture of your skin: capture, analyse, track, compare and care."),
   component: Page,
 });
 

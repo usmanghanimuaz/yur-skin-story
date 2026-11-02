@@ -17,7 +17,7 @@ export function ResultsShowcase() {
     </div>
     <div className="mt-10 grid gap-6 md:grid-cols-3">
       {RESULTS.map((r) => <figure key={r.img} className="overflow-hidden rounded-3xl border bg-card">
-        <img src={r.img} alt="Face close-up used for a Your Skin Story check-in" width={560} height={700} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+        <img src={r.img} alt="Face close-up used for a Skin Twin AI check-in" width={560} height={700} loading="lazy" className="aspect-[4/5] w-full object-cover" />
         <figcaption className="p-5">
           <div className="flex items-center gap-4"><ScoreRing score={r.score} size={84} /><div><p className="font-display text-xl">{r.label}</p><p className="text-xs text-muted-foreground">{r.note}</p><span className="mt-2 inline-block rounded-full bg-secondary px-2.5 py-1 text-[10px] tracking-widest text-muted-foreground">YOUCAM SKIN AI</span></div></div>
           <dl className="mt-4 divide-y border-t text-sm">{r.metrics.map(([k, v]) => <div key={k} className="flex justify-between py-2"><dt className="text-muted-foreground">{k}</dt><dd className="font-display text-lg">{v}</dd></div>)}</dl>

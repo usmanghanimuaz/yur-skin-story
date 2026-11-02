@@ -38,7 +38,7 @@ export function SharedScansSlider() {
   const idx = i % data.length;
   return <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8" aria-roledescription="carousel" aria-label="Shared scans">
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div><p className="text-xs font-medium text-rose"><Users className="mr-1 inline size-3" />Shared by members</p><h2 className="mt-3 text-4xl">Real skin stories</h2><p className="mt-2 max-w-lg text-sm text-muted-foreground">These members chose to share their latest scan. Cosmetic scores only, not a diagnosis.</p></div>
+      <div><p className="text-xs font-medium text-rose"><Users className="mr-1 inline size-3" />Shared by members</p><h2 className="mt-3 text-4xl">Real skin twins</h2><p className="mt-2 max-w-lg text-sm text-muted-foreground">These members chose to share their latest scan. Cosmetic scores only, not a diagnosis.</p></div>
       <Button asChild variant="outline" className="rounded-full"><Link to="/shared-scans">See all</Link></Button>
     </div>
     <div className="relative mx-auto max-w-sm" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>

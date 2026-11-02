@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/app/policy";
 import { pageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/security")({ head: () => pageHead("Security", "How Your Skin Story protects your account, photos and skin records."), component: Page });
+export const Route = createFileRoute("/security")({ head: () => pageHead("Security", "How Skin Twin AI protects your account, photos and skin records."), component: Page });
 
 function Page() {
   return <PolicyPage eyebrow="SECURITY" title="How we protect you" intro="Security is built into every layer, from sign-in to storage to deletion." sections={[
