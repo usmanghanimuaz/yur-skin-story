@@ -5,7 +5,7 @@ export function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5" aria-label="Skin Twin AI home">
       <img src={logoAsset.url} alt="" width={40} height={40} className="size-10 shrink-0 rounded-full" />
-      <span className="font-display text-2xl leading-none">Your Skin <span className="text-rose">Story</span></span>
+      <span className="font-display text-2xl leading-none">Skin Twin <span className="text-rose">AI</span></span>
     </Link>
   );
 }

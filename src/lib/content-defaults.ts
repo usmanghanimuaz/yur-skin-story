@@ -24,7 +24,7 @@ export const CONTENT_DEFAULTS: ContentDefaults = {
     rhythm_lead: "Get to know your skin beyond the mirror, without adding more to your day.",
     step1_title: "Take a moment. Take a photo.",
     step1_text: "A close-up in natural light is all it takes. Choose a photo or use your camera.",
-    step2_title: "Meet your skin's story.",
+    step2_title: "Meet your skin twin.",
     step2_text: "YouCam Skin AI turns your photo into cosmetic insights across skin concerns.",
     step3_title: "Watch the little changes.",
     step3_text: "Check in weekly and see how your skin looks over time, alongside your routine.",
