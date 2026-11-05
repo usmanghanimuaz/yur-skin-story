@@ -83,6 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Skin Twin AI — Private weekly skin tracking" },
       { property: "og:site_name", content: "Skin Twin AI" },
+      { name: "google-site-verification", content: "YLQNEOjYvVbcfDuom9YccwNPctk2cz8I55u9hqF-_aQ" },
       { name: "description", content: "Private weekly cosmetic skin tracking." },
     ],
     links: [
